@@ -1,5 +1,8 @@
 package jaringobi.exception;
 
-public class BudgetGlobalException extends RuntimeException{
+import lombok.Getter;
 
+@Getter
+public class BudgetGlobalException extends RuntimeException{
+    private final ErrorType errorType = ErrorType.of(this.getClass());
 }
