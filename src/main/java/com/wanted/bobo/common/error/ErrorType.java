@@ -1,4 +1,4 @@
-package com.wanted.bobo.exception;
+package com.wanted.bobo.common.error;
 
 import java.util.Arrays;
 import java.util.List;

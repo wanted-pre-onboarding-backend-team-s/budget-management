@@ -1,4 +1,4 @@
-package com.wanted.bobo.exception;
+package com.wanted.bobo.common.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
