@@ -1,7 +1,7 @@
-package com.wanted.bobo.category.api;
+package com.wanted.bobo.category.controller;
 
 import com.wanted.bobo.category.Category;
-import com.wanted.bobo.category.CategoryResponse;
+import com.wanted.bobo.category.dto.CategoryResponse;
 import com.wanted.bobo.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

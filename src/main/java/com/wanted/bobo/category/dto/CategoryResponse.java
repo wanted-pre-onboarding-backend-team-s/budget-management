@@ -1,6 +1,7 @@
-package com.wanted.bobo.category;
+package com.wanted.bobo.category.dto;
 
 
+import com.wanted.bobo.category.Category;
 import lombok.Getter;
 
 @Getter
