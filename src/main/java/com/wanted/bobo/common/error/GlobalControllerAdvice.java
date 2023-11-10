@@ -1,7 +1,9 @@
 package com.wanted.bobo.common.error;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<ErrorResponse> handleWantedException(CustomException exception) {
+    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException exception) {
         ErrorType errorType = exception.getErrorType();
 
         log.error("[error] type: {}, status: {}, message: {}",
@@ -21,6 +23,24 @@ public class GlobalControllerAdvice {
         return ResponseEntity
                 .status(errorType.getHttpStatus())
                 .body(ErrorResponse.of(errorType));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception
+    ) {
+        log.error("[error] type: {}, status: {}, message: {}",
+                  exception.getClass().getSimpleName(),
+                  exception.getStatusCode(),
+                  exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(String.valueOf(HttpStatus.BAD_REQUEST.value()), getMessage(exception)));
+    }
+
+    private String getMessage(MethodArgumentNotValidException e) {
+        return e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
     }
 
 }
