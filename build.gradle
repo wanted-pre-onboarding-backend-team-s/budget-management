@@ -26,6 +26,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // password encoder
+    implementation 'org.springframework.security:spring-security-crypto:6.1.5'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
     compileOnly 'org.projectlombok:lombok'
@@ -34,6 +39,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:spring-mock-mvc:5.3.2'
+    testImplementation 'org.springframework.boot:spring-boot-docker-compose'
 }
 
 tasks.named('test') {
