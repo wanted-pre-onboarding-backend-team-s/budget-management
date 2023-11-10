@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 public class CategoryResponse {
 
-    private final String name;
     private final String code;
+    private final String name;
 
     public CategoryResponse(Category category) {
-        this.name = category.getValue();
+        this.name = category.getName();
         this.code = category.getCode();
     }
 

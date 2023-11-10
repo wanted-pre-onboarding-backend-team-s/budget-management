@@ -1,6 +1,5 @@
 package com.wanted.bobo.category;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ public enum Category {
     APPAREL("C008", "의류비");
 
     private final String code;
-    private final String value;
+    private final String name;
 
     private static final Map<String, Category> CATEGORY_MAP = new HashMap<>();
 
@@ -28,9 +27,9 @@ public enum Category {
         }
     }
 
-    Category(String code, String value) {
+    Category(String code, String name) {
         this.code = code;
-        this.value = value;
+        this.name = name;
     }
 
     public static List<CategoryResponse> toList() {
