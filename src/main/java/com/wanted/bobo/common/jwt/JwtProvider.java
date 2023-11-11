@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.wanted.bobo.common.error.CustomException;
+import com.wanted.bobo.common.jwt.exception.ExpiredTokenException;
 import com.wanted.bobo.user.domain.User;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +25,18 @@ public class JwtProvider {
                   .sign(Algorithm.HMAC256(JwtProperties.SECRET));
     }
 
-    public Long getUserId(String token) {
-        return decodedToken(token).getClaim(CLAIM_NAME)
-                                  .asLong();
-    }
-
     public boolean validateToken(String token) {
         try {
             decodedToken(token);
             return true;
         } catch (TokenExpiredException exception) {
-            throw new CustomException();
+            throw new ExpiredTokenException();
         }
+    }
+
+    public Long getUserId(String token) {
+        return decodedToken(token).getClaim(CLAIM_NAME)
+                                  .asLong();
     }
 
     private DecodedJWT decodedToken(String token) {
