@@ -1,8 +1,9 @@
-package com.saving.budget.domain;
+package com.saving.budget.domain.entity;
 
 import com.saving.common.domain.entity.BaseCreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Budget extends BaseCreateTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private Long categoryId;
@@ -28,6 +29,6 @@ public class Budget extends BaseCreateTimeEntity {
         this.userId = userId;
         this.categoryId = categoryId;
         this.amount = amount;
-        this.budgetYearMonth = budgetYearMonth + "-01";
+        this.budgetYearMonth = budgetYearMonth;
     }
 }
