@@ -3,6 +3,7 @@ package com.saving.common.exception;
 import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistException;
 import com.saving.category.budget.exception.BudgetNotFoundException;
 import com.saving.category.exception.CategoryNotFoundException;
+import com.saving.expense.exception.ExpenseMethodNotFoundException;
 import com.saving.user.exception.DuplicateUserNameException;
 import com.saving.user.exception.InvalidTokenException;
 import com.saving.user.exception.JwtExpiredException;
@@ -36,7 +37,10 @@ public enum ErrorType {
     B001("B001", "이미 존재하는 카테고리의 예산입니다.",
             BudgetForCategoryAlreadyExistException.class, HttpStatus.BAD_REQUEST),
     B002("B002", "존재하지 않는 예산입니다."
-            , BudgetNotFoundException.class, HttpStatus.NOT_FOUND);
+            , BudgetNotFoundException.class, HttpStatus.NOT_FOUND),
+
+    EP001("EP001", "존재하지 않는 화폐유형입니다.",
+            ExpenseMethodNotFoundException.class, HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;

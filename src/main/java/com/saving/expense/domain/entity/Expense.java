@@ -1,6 +1,9 @@
 package com.saving.expense.domain.entity;
 
+import com.saving.expense.domain.enums.ExpenseMethod;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +22,7 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long categoryId;
+    @Enumerated(value = EnumType.STRING)
     private ExpenseMethod expenseMethod;
     private int amount;
     private String content;
