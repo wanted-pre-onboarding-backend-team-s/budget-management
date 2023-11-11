@@ -4,6 +4,7 @@ import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistExcepti
 import com.saving.category.budget.exception.BudgetNotFoundException;
 import com.saving.category.exception.CategoryNotFoundException;
 import com.saving.expense.exception.ExpenseMethodNotFoundException;
+import com.saving.expense.exception.ExpenseNotFoundException;
 import com.saving.user.exception.DuplicateUserNameException;
 import com.saving.user.exception.InvalidTokenException;
 import com.saving.user.exception.JwtExpiredException;
@@ -40,7 +41,9 @@ public enum ErrorType {
             , BudgetNotFoundException.class, HttpStatus.NOT_FOUND),
 
     EP001("EP001", "존재하지 않는 화폐유형입니다.",
-            ExpenseMethodNotFoundException.class, HttpStatus.NOT_FOUND);
+            ExpenseMethodNotFoundException.class, HttpStatus.NOT_FOUND),
+    EP002("EP002", "존재하지 않는 지출 내역입니다.",
+            ExpenseNotFoundException.class, HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;
