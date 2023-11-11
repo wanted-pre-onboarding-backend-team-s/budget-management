@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/api/v1/users")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserCreatedResponseDto> createUser(
             @Valid @RequestBody UserCreateRequestDto userCreateRequestDto) {
