@@ -1,4 +1,4 @@
-package com.saving.budget.domain.entity;
+package com.saving.category.budget.domain.entity;
 
 import com.saving.common.domain.entity.BaseCreateTimeEntity;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.saving.budget.exception;
+package com.saving.category.budget.exception;
 
 import com.saving.common.exception.CustomException;
 
