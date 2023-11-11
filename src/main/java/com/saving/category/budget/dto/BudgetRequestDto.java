@@ -31,9 +31,8 @@ public class BudgetRequestDto {
         this.budgetYearMonth = budgetYearMonth;
     }
 
-    public Budget toEntity(Long userId, Long categoryId) {
+    public Budget toEntity(Long categoryId) {
         return Budget.builder()
-                .userId(userId)
                 .categoryId(categoryId)
                 .amount(amount)
                 .budgetYearMonth(budgetYearMonth + "-01")

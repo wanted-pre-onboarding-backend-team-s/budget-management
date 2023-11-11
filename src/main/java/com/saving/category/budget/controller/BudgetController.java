@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,22 +22,20 @@ public class BudgetController {
 
     @PostMapping
     public ApiResponse<CreatedBudgetResponseDto> createBudget(
-            @RequestAttribute Long userId,
             @PathVariable Long categoryId,
             @Valid @RequestBody BudgetRequestDto budgetRequestDto) {
 
         return ApiResponse.created(
-                budgetService.createBudget(userId, categoryId, budgetRequestDto));
+                budgetService.createBudget(categoryId, budgetRequestDto));
     }
 
     @PutMapping("/{budgetId}")
     public ApiResponse<String> updateBudget(
-            @RequestAttribute Long userId,
             @PathVariable Long categoryId,
             @PathVariable Long budgetId,
             @Valid @RequestBody BudgetRequestDto budgetRequestDto) {
 
-        budgetService.updateBudget(userId, categoryId, budgetId, budgetRequestDto);
+        budgetService.updateBudget(categoryId, budgetId, budgetRequestDto);
         return ApiResponse.noContent();
     }
 }
