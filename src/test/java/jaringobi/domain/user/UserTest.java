@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@DisplayName("User 엔티티 테스트")
 class UserTest {
 
     private final SecurityConfig securityConfig = new SecurityConfig();

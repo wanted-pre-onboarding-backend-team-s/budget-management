@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+@DisplayName("회원가입 요청 값 유효성 테스트")
 class AddRequestUserTest extends ValidatorTest {
 
     @Nested

@@ -24,7 +24,9 @@ public class DatabaseCleaner implements InitializingBean{
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities()
-                .stream().map(it -> {
+                .stream()
+                .filter(it -> !it.getName().equalsIgnoreCase("category")) // category 엔터티 제외
+                .map(it -> {
                     final String entityName = it.getName().toLowerCase(Locale.ROOT);
                     if (entityName.equals("user")) {
                         return entityName.concat("s");
