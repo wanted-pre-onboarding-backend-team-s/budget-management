@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+@DisplayName("카테고리 API 테스트")
 public class CategoryApiTest extends ApiTest {
 
     @Test

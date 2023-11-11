@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@DisplayName("회원가입 서비스 레이어 테스트")
 @MockitoSettings
 class JoinServiceTest {
 

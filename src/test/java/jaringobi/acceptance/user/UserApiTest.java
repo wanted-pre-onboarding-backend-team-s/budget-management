@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("회원 API 테스트")
 public class UserApiTest extends ApiTest {
 
     @Nested
