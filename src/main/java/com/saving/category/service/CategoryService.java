@@ -4,7 +4,7 @@ import com.saving.category.domain.entity.Category;
 import com.saving.category.domain.entity.DefaultCategory;
 import com.saving.category.domain.repository.CategoryRepository;
 import com.saving.category.domain.repository.DefaultCategoryRepository;
-import com.saving.category.dto.CreatedCategoryResponseDto;
+import com.saving.category.dto.CategoryListResponseDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +28,17 @@ public class CategoryService {
                     .categoryName(defaultCategory.getDefaultCategoryName())
                     .build());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryListResponseDto> getCategoryList(Long userId) {
+
+        List<CategoryListResponseDto> list = new ArrayList<>();
+        List<Category> allByUserId = categoryRepository.findAllByUserId(userId);
+        for (Category category : allByUserId) {
+            list.add(new CategoryListResponseDto(category));
+        }
+
+        return list;
     }
 }
