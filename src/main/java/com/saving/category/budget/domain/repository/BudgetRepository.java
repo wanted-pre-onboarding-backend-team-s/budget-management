@@ -8,5 +8,5 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     boolean existsByCategoryIdAndBudgetYearMonth(Long categoryId, String budgetYearMonth);
 
-    Optional<Budget> findByIdAndUserIdAndCategoryId(Long id, Long userId, Long categoryId);
+    Optional<Budget> findByIdAndCategoryId(Long id, Long categoryId);
 }

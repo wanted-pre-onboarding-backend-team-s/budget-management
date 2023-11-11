@@ -20,14 +20,12 @@ public class Budget extends BaseCreateTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
     private Long categoryId;
     private int amount;
     private String budgetYearMonth;
 
     @Builder
-    public Budget(Long userId, Long categoryId, int amount, String budgetYearMonth) {
-        this.userId = userId;
+    public Budget(Long categoryId, int amount, String budgetYearMonth) {
         this.categoryId = categoryId;
         this.amount = amount;
         this.budgetYearMonth = budgetYearMonth;

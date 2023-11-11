@@ -23,9 +23,9 @@ public class BudgetService {
 
     @Transactional
     public CreatedBudgetResponseDto createBudget(
-            Long userId, Long categoryId, BudgetRequestDto budgetRequestDto) {
+            Long categoryId, BudgetRequestDto budgetRequestDto) {
 
-        if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
+        if (!categoryRepository.existsById(categoryId)) {
             throw new CategoryNotFoundException();
         }
 
@@ -35,15 +35,14 @@ public class BudgetService {
             throw new BudgetForCategoryAlreadyExistException();
         }
         return new CreatedBudgetResponseDto(
-                budgetRepository.save(budgetRequestDto.toEntity(userId, categoryId)));
+                budgetRepository.save(budgetRequestDto.toEntity(categoryId)));
     }
 
     @Transactional
-    public void updateBudget(
-            Long userId, Long categoryId, Long budgetId, BudgetRequestDto budgetRequestDto) {
+    public void updateBudget(Long categoryId, Long budgetId, BudgetRequestDto budgetRequestDto) {
 
         Budget budget = budgetRepository
-                .findByIdAndUserIdAndCategoryId(budgetId, userId, categoryId)
+                .findByIdAndCategoryId(budgetId, categoryId)
                 .orElseThrow(BudgetNotFoundException::new);
 
         budget.changeAmountAndBudgetYearMonth(budgetRequestDto);
