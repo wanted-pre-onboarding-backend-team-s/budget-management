@@ -7,6 +7,7 @@ import com.saving.expense.service.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +35,12 @@ public class ExpenseController {
     public ApiResponse<String> updateExpense(
             @PathVariable Long expenseId, @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
         expenseService.updateExpense(expenseId, expenseRequestDto);
+        return ApiResponse.noContent();
+    }
+
+    @DeleteMapping("/{expenseId}")
+    public ApiResponse<String> deleteExpense(@PathVariable Long expenseId) {
+        expenseService.deleteExpense(expenseId);
         return ApiResponse.noContent();
     }
 }
