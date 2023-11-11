@@ -1,6 +1,6 @@
-package com.saving.budget.dto;
+package com.saving.category.budget.dto;
 
-import com.saving.budget.domain.entity.Budget;
+import com.saving.category.budget.domain.entity.Budget;
 import lombok.Getter;
 
 @Getter

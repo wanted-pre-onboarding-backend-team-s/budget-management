@@ -2,9 +2,11 @@ package com.saving.common.interceptor;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.saving.common.util.JwtUtil;
+import com.saving.user.domain.repository.UserRepository;
 import com.saving.user.exception.InvalidTokenException;
 import com.saving.user.exception.JwtExpiredException;
 import com.saving.user.exception.NullTokenException;
+import com.saving.user.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION = "Authorization";
 
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     @Override
     public boolean preHandle(
@@ -44,8 +47,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String token = authorization.split(" ")[1];
 
         try {
-            request.setAttribute("userId", jwtUtil.verifyToken(token));
-            return true;
+            Long userId = jwtUtil.verifyToken(token);
+            if (userRepository.existsById(userId)) {
+                request.setAttribute("userId", userId);
+                return true;
+            }
+            throw new UserNotFoundException();
 
         } catch (TokenExpiredException e) {
             log.error("[TokenExpiredException] ex", e);

@@ -1,6 +1,6 @@
-package com.saving.budget.dto;
+package com.saving.category.budget.dto;
 
-import com.saving.budget.domain.entity.Budget;
+import com.saving.category.budget.domain.entity.Budget;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -11,11 +11,7 @@ import org.hibernate.validator.constraints.Range;
 
 @Getter
 @NoArgsConstructor
-public class CreateBudgetRequestDto {
-
-    @NotNull(message = "필수 입력값 입니다.")
-    @Range(min = 1, message = "1 이상의 값을 입력해주세요")
-    private Long categoryId;
+public class BudgetRequestDto {
 
     @NotNull(message = "필수 입력값 입니다.")
     @Range(min = 1, message = "1 이상의 값을 입력해주세요")
@@ -30,13 +26,12 @@ public class CreateBudgetRequestDto {
 
 
     @Builder
-    public CreateBudgetRequestDto(Long categoryId, int amount, String budgetYearMonth) {
-        this.categoryId = categoryId;
+    public BudgetRequestDto(int amount, String budgetYearMonth) {
         this.amount = amount;
         this.budgetYearMonth = budgetYearMonth;
     }
 
-    public Budget toEntity(Long userId) {
+    public Budget toEntity(Long userId, Long categoryId) {
         return Budget.builder()
                 .userId(userId)
                 .categoryId(categoryId)

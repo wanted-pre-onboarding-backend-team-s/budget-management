@@ -1,6 +1,8 @@
 package com.saving.common.exception;
 
-import com.saving.budget.exception.BudgetForCategoryAlreadyExistException;
+import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistException;
+import com.saving.category.budget.exception.BudgetNotFoundException;
+import com.saving.category.exception.CategoryNotFoundException;
 import com.saving.user.exception.DuplicateUserNameException;
 import com.saving.user.exception.InvalidTokenException;
 import com.saving.user.exception.JwtExpiredException;
@@ -16,7 +18,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorType {
 
-    U001("U001", "계정을 찾을 수 없습니다.",
+    U001("U001", "존재하지 않는 계정입니다.",
             UserNotFoundException.class, HttpStatus.NOT_FOUND),
     U002("U002", "중복된 아이디 입니다.",
             DuplicateUserNameException.class, HttpStatus.BAD_REQUEST),
@@ -28,8 +30,13 @@ public enum ErrorType {
     T003("T003", "만료된 토큰입니다.",
             JwtExpiredException.class, HttpStatus.BAD_REQUEST),
 
+    C001("C001", "존재하지 않는 카테고리입니다.",
+            CategoryNotFoundException.class, HttpStatus.NOT_FOUND),
+
     B001("B001", "이미 존재하는 카테고리의 예산입니다.",
-            BudgetForCategoryAlreadyExistException.class, HttpStatus.BAD_REQUEST);
+            BudgetForCategoryAlreadyExistException.class, HttpStatus.BAD_REQUEST),
+    B002("B002", "존재하지 않는 예산입니다."
+            , BudgetNotFoundException.class, HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;
