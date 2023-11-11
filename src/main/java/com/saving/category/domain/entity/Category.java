@@ -1,8 +1,9 @@
-package com.saving.category.domain;
+package com.saving.category.domain.entity;
 
 import com.saving.common.domain.entity.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Category extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private String categoryName;
