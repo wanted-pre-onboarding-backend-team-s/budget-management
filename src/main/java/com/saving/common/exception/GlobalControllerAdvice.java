@@ -36,8 +36,6 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleWantedException(CustomException e) {
-        ErrorType errorType = e.getErrorType();
-        log.info("[{}] ex {}", errorType.getClassType().getSimpleName(), errorType.getMessage());
         return ResponseEntity.status(e.getErrorType().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorType()));
     }
