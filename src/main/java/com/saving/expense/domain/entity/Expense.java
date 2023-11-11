@@ -1,6 +1,7 @@
 package com.saving.expense.domain.entity;
 
 import com.saving.expense.domain.enums.ExpenseMethod;
+import com.saving.expense.dto.ExpenseRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,5 +39,13 @@ public class Expense {
         this.content = content;
         this.isTotalExpenseApply = isTotalExpenseApply;
         this.expenseAt = expenseAt;
+    }
+
+    public void changeExpense(ExpenseRequestDto expenseRequestDto) {
+        this.expenseMethod = ExpenseMethod.of(expenseRequestDto.getExpenseMethod());
+        this.amount = expenseRequestDto.getAmount();
+        this.content = expenseRequestDto.getContent();
+        this.isTotalExpenseApply = expenseRequestDto.getIsTotalExpenseApply();
+        this.expenseAt = expenseRequestDto.getExpenseAt();
     }
 }

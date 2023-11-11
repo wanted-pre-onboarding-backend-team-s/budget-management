@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Range;
 
 @Getter
 @NoArgsConstructor
-public class CreateExpenseRequestDto {
+public class ExpenseRequestDto {
 
     @NotNull(message = "필수 입력값 입니다.")
     @Range(min = 1, message = "1 이상의 값을 입력해주세요.")

@@ -2,9 +2,11 @@ package com.saving.expense.service;
 
 import com.saving.category.domain.repository.CategoryRepository;
 import com.saving.category.exception.CategoryNotFoundException;
+import com.saving.expense.domain.entity.Expense;
 import com.saving.expense.domain.repository.ExpenseRepository;
-import com.saving.expense.dto.CreateExpenseRequestDto;
+import com.saving.expense.dto.ExpenseRequestDto;
 import com.saving.expense.dto.CreatedExpenseResponseDto;
+import com.saving.expense.exception.ExpenseNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,13 +22,22 @@ public class ExpenseService {
 
     @Transactional
     public CreatedExpenseResponseDto createExpense(
-            CreateExpenseRequestDto createExpenseRequestDto) {
+            ExpenseRequestDto expenseRequestDto) {
 
-        if (!categoryRepository.existsById(createExpenseRequestDto.getCategoryId())) {
+        if (!categoryRepository.existsById(expenseRequestDto.getCategoryId())) {
             throw new CategoryNotFoundException();
         }
 
         return new CreatedExpenseResponseDto(
-                expenseRepository.save(createExpenseRequestDto.toEntity()));
+                expenseRepository.save(expenseRequestDto.toEntity()));
+    }
+
+    @Transactional
+    public void updateExpense(Long expenseId, ExpenseRequestDto expenseRequestDto) {
+
+        Expense savedExpense = expenseRepository.findById(expenseId)
+                .orElseThrow(ExpenseNotFoundException::new);
+
+        savedExpense.changeExpense(expenseRequestDto);
     }
 }
