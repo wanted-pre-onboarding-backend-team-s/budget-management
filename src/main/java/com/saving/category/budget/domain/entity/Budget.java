@@ -1,5 +1,6 @@
 package com.saving.category.budget.domain.entity;
 
+import com.saving.category.budget.dto.BudgetRequestDto;
 import com.saving.common.domain.entity.BaseCreateTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,5 +31,10 @@ public class Budget extends BaseCreateTimeEntity {
         this.categoryId = categoryId;
         this.amount = amount;
         this.budgetYearMonth = budgetYearMonth;
+    }
+
+    public void changeAmountAndBudgetYearMonth(BudgetRequestDto budgetRequestDto) {
+        this.amount = budgetRequestDto.getAmount();
+        this.budgetYearMonth = budgetRequestDto.getBudgetYearMonth() + "-01";
     }
 }

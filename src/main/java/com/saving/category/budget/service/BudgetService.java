@@ -1,9 +1,11 @@
 package com.saving.category.budget.service;
 
+import com.saving.category.budget.domain.entity.Budget;
 import com.saving.category.budget.domain.repository.BudgetRepository;
 import com.saving.category.budget.dto.BudgetRequestDto;
 import com.saving.category.budget.dto.CreatedBudgetResponseDto;
 import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistException;
+import com.saving.category.budget.exception.BudgetNotFoundException;
 import com.saving.category.domain.repository.CategoryRepository;
 import com.saving.category.exception.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,9 @@ public class BudgetService {
     public CreatedBudgetResponseDto createBudget(
             Long userId, Long categoryId, BudgetRequestDto budgetRequestDto) {
 
-        existsByUserAndCategory(categoryId, userId);
+        if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
+            throw new CategoryNotFoundException();
+        }
 
         if (budgetRepository.existsByCategoryIdAndBudgetYearMonth(
                 categoryId, budgetRequestDto.getBudgetYearMonth() + "-01")) {
@@ -34,9 +38,14 @@ public class BudgetService {
                 budgetRepository.save(budgetRequestDto.toEntity(userId, categoryId)));
     }
 
-    private void existsByUserAndCategory(Long categoryId, Long userId) {
-        if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
-            throw new CategoryNotFoundException();
-        }
+    @Transactional
+    public void updateBudget(
+            Long userId, Long categoryId, Long budgetId, BudgetRequestDto budgetRequestDto) {
+
+        Budget budget = budgetRepository
+                .findByIdAndUserIdAndCategoryId(budgetId, userId, categoryId)
+                .orElseThrow(BudgetNotFoundException::new);
+
+        budget.changeAmountAndBudgetYearMonth(budgetRequestDto);
     }
 }
