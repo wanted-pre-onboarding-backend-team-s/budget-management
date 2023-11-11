@@ -25,7 +25,7 @@ public class SwaggerConfig {
                 new SecurityScheme().name(jwt)
                                     .type(SecurityScheme.Type.APIKEY)
                                     .in(SecurityScheme.In.HEADER)
-                                    .name("token")
+                                    .name("Authorization")
         );
 
         return new OpenAPI().info(info)
