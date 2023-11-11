@@ -2,6 +2,7 @@ package com.saving.user.controller;
 
 import com.saving.category.service.CategoryService;
 import com.saving.common.response.ApiResponse;
+import com.saving.common.response.JwtResponse;
 import com.saving.user.dto.LoginRequestDto;
 import com.saving.user.dto.UserCreateRequestDto;
 import com.saving.user.dto.UserCreatedResponseDto;
@@ -32,5 +33,12 @@ public class UserController {
         categoryService.createDefaultCategories(user.getId());
 
         return ApiResponse.created(user);
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<JwtResponse> login(
+            @Valid @RequestBody LoginRequestDto loginRequestDto) {
+
+        return ApiResponse.ok(userService.authenticationAndCreateJwt(loginRequestDto));
     }
 }

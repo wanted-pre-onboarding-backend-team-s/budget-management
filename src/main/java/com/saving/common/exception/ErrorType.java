@@ -1,6 +1,7 @@
 package com.saving.common.exception;
 
 import com.saving.user.exception.DuplicateUserNameException;
+import com.saving.user.exception.UserNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorType {
 
-    U001("U001", "계정을 찾을 수 없습니다.", CustomException.class, HttpStatus.BAD_REQUEST),
+    U001("U001", "계정을 찾을 수 없습니다.", UserNotFoundException.class, HttpStatus.NOT_FOUND),
     U002("U002", "중복된 아이디 입니다.", DuplicateUserNameException.class, HttpStatus.BAD_REQUEST);
 
     private final String code;
