@@ -1,6 +1,6 @@
 package com.wanted.bobo.user.domain;
 
-import com.wanted.bobo.user.dto.JoinRequest;
+import com.wanted.bobo.user.exception.MismatchedPasswordException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,4 +32,11 @@ public class User {
     public void changePassword(String password) {
         this.password = password;
     }
+
+    public void checkPasswordMatches(String password, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(password, this.getPassword())) {
+            throw new MismatchedPasswordException();
+        }
+    }
+
 }
