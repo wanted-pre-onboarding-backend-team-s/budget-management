@@ -2,6 +2,7 @@ package com.saving.user.controller;
 
 import com.saving.category.service.CategoryService;
 import com.saving.common.response.ApiResponse;
+import com.saving.user.dto.LoginRequestDto;
 import com.saving.user.dto.UserCreateRequestDto;
 import com.saving.user.dto.UserCreatedResponseDto;
 import com.saving.user.service.UserService;
@@ -24,7 +25,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<UserCreatedResponseDto> createUser(@Valid @RequestBody UserCreateRequestDto userCreateRequestDto) {
+    public ApiResponse<UserCreatedResponseDto> createUser(
+            @Valid @RequestBody UserCreateRequestDto userCreateRequestDto) {
 
         UserCreatedResponseDto user = userService.createUser(userCreateRequestDto);
         categoryService.createDefaultCategories(user.getId());
