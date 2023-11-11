@@ -40,4 +40,13 @@ public class ExpenseService {
 
         savedExpense.changeExpense(expenseRequestDto);
     }
+
+    @Transactional
+    public void deleteExpense(Long expenseId) {
+
+        if (!expenseRepository.existsById(expenseId)) {
+            throw new ExpenseNotFoundException();
+        }
+        expenseRepository.deleteById(expenseId);
+    }
 }
