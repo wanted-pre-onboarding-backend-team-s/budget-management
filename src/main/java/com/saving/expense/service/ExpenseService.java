@@ -5,9 +5,13 @@ import com.saving.category.exception.CategoryNotFoundException;
 import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
 import com.saving.expense.domain.entity.Expense;
 import com.saving.expense.domain.repository.ExpenseRepository;
+import com.saving.expense.dto.ExpenseListResponseDto;
 import com.saving.expense.dto.ExpenseRequestDto;
 import com.saving.expense.dto.ExpenseResponseDto;
+import com.saving.expense.dto.SimpleExpenseDto;
+import com.saving.expense.dto.TotalExpenseByCategory;
 import com.saving.expense.exception.NotExistExpenseInCategoryException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,6 +69,30 @@ public class ExpenseService {
 
         return new ExpenseResponseDto(expenseRepository.findByIdAndCategoryId(expenseId, categoryId)
                 .orElseThrow(NotExistExpenseInCategoryException::new));
+    }
+
+    @Transactional(readOnly = true)
+    public ExpenseListResponseDto expenseList(
+            Long userId, String startDate, String endDate,
+            Long categoryId, Boolean minAmount, Boolean maxAmount) {
+
+        List<SimpleExpenseDto> simpleExpenseList = expenseRepository.listOfTimeBasedExpense(userId,
+                startDate, endDate,
+                categoryId, minAmount, maxAmount);
+
+        Long totalExpense = expenseRepository.totalExpense(userId, startDate, endDate, categoryId,
+                minAmount,
+                maxAmount);
+
+        List<TotalExpenseByCategory> totalExpenseByCategoryList = expenseRepository.listOfCategoryBasedExpense(
+                userId, startDate, endDate, categoryId,
+                minAmount, maxAmount);
+
+        return ExpenseListResponseDto.builder()
+                .expenseList(simpleExpenseList)
+                .totalExpense(totalExpense)
+                .totalExpenseByCategoryList(totalExpenseByCategoryList)
+                .build();
     }
 
     private void existUserAndCategory(Long categoryId, Long userId) {
