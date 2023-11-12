@@ -35,8 +35,9 @@ public class ExpenseRequestDto {
     )
     private String expenseAt;
 
-    public Expense toEntity() {
+    public Expense toEntity(Long categoryId) {
         return Expense.builder()
+                .categoryId(categoryId)
                 .expenseMethod(expenseMethod)
                 .amount(amount)
                 .content(content)

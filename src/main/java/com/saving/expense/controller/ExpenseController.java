@@ -25,7 +25,7 @@ public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    @PostMapping
+    @PostMapping("/categories/{categoryId}/expenses")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ExpenseResponseDto> createExpense(
             @RequestAttribute Long userId,
@@ -55,5 +55,15 @@ public class ExpenseController {
 
         expenseService.deleteExpense(userId, categoryId, expenseId);
         return ApiResponse.noContent();
+    }
+
+    @GetMapping("/categories/{categoryId}/expenses/{expenseId}")
+    public ApiResponse<ExpenseResponseDto> getExpense(
+            @RequestAttribute Long userId,
+            @PathVariable Long categoryId,
+            @PathVariable Long expenseId) {
+
+        return ApiResponse.ok(
+                expenseService.getExpense(userId, categoryId, expenseId));
     }
 }

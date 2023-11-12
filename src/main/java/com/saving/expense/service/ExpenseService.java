@@ -32,7 +32,7 @@ public class ExpenseService {
         }
 
         return new ExpenseResponseDto(
-                expenseRepository.save(expenseRequestDto.toEntity()));
+                expenseRepository.save(expenseRequestDto.toEntity(categoryId)));
     }
 
     @Transactional
