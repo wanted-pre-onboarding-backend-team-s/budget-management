@@ -40,4 +40,7 @@ public enum Category {
                            .toList();
     }
 
+    public static Category of(String code) {
+        return CATEGORY_MAP.get(code);
+    }
 }
