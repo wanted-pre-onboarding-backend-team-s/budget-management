@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,21 +27,29 @@ public class ExpenseController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<CreatedExpenseResponseDto> createExpense(
+            @RequestAttribute Long userId,
             @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
 
-        return ApiResponse.created(expenseService.createExpense(expenseRequestDto));
+        return ApiResponse.created(expenseService.createExpense(userId, expenseRequestDto));
     }
 
     @PutMapping("/{expenseId}")
     public ApiResponse<String> updateExpense(
-            @PathVariable Long expenseId, @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
-        expenseService.updateExpense(expenseId, expenseRequestDto);
+            @RequestAttribute Long userId,
+            @PathVariable Long expenseId,
+            @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
+
+        expenseService.updateExpense(userId, expenseId, expenseRequestDto);
         return ApiResponse.noContent();
     }
 
     @DeleteMapping("/{expenseId}")
-    public ApiResponse<String> deleteExpense(@PathVariable Long expenseId) {
-        expenseService.deleteExpense(expenseId);
+    public ApiResponse<String> deleteExpense(
+            @RequestAttribute Long userId,
+            @PathVariable Long expenseId,
+            @RequestBody Long categoryId) {
+
+        expenseService.deleteExpense(userId, categoryId, expenseId);
         return ApiResponse.noContent();
     }
 }

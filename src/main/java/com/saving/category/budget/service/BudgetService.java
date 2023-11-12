@@ -7,7 +7,7 @@ import com.saving.category.budget.dto.CreatedBudgetResponseDto;
 import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistException;
 import com.saving.category.budget.exception.BudgetNotFoundException;
 import com.saving.category.domain.repository.CategoryRepository;
-import com.saving.category.exception.CategoryNotFoundException;
+import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,9 @@ public class BudgetService {
 
     @Transactional
     public CreatedBudgetResponseDto createBudget(
-            Long categoryId, BudgetRequestDto budgetRequestDto) {
+            Long userId, Long categoryId, BudgetRequestDto budgetRequestDto) {
 
-        if (!categoryRepository.existsById(categoryId)) {
-            throw new CategoryNotFoundException();
-        }
+        existUserAndCategory(categoryId, userId);
 
         if (budgetRepository.existsByCategoryIdAndBudgetYearMonth(
                 categoryId, budgetRequestDto.getBudgetYearMonth() + "-01")) {
@@ -39,12 +37,21 @@ public class BudgetService {
     }
 
     @Transactional
-    public void updateBudget(Long categoryId, Long budgetId, BudgetRequestDto budgetRequestDto) {
+    public void updateBudget(
+            Long userId, Long categoryId, Long budgetId, BudgetRequestDto budgetRequestDto) {
+
+        existUserAndCategory(categoryId, userId);
 
         Budget budget = budgetRepository
                 .findByIdAndCategoryId(budgetId, categoryId)
                 .orElseThrow(BudgetNotFoundException::new);
 
         budget.changeAmountAndBudgetYearMonth(budgetRequestDto);
+    }
+
+    private void existUserAndCategory(Long categoryId, Long userId) {
+        if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
+            throw new MismatchedCategoryIdAndUserIdException();
+        }
     }
 }

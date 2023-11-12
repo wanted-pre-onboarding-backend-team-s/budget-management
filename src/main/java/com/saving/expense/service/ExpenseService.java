@@ -2,6 +2,7 @@ package com.saving.expense.service;
 
 import com.saving.category.domain.repository.CategoryRepository;
 import com.saving.category.exception.CategoryNotFoundException;
+import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
 import com.saving.expense.domain.entity.Expense;
 import com.saving.expense.domain.repository.ExpenseRepository;
 import com.saving.expense.dto.ExpenseRequestDto;
@@ -22,7 +23,9 @@ public class ExpenseService {
 
     @Transactional
     public CreatedExpenseResponseDto createExpense(
-            ExpenseRequestDto expenseRequestDto) {
+            Long userId, ExpenseRequestDto expenseRequestDto) {
+
+        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
 
         if (!categoryRepository.existsById(expenseRequestDto.getCategoryId())) {
             throw new CategoryNotFoundException();
@@ -33,7 +36,10 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void updateExpense(Long expenseId, ExpenseRequestDto expenseRequestDto) {
+    public void updateExpense(
+            Long userId, Long expenseId, ExpenseRequestDto expenseRequestDto) {
+
+        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
 
         Expense savedExpense = expenseRepository.findById(expenseId)
                 .orElseThrow(ExpenseNotFoundException::new);
@@ -42,11 +48,19 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void deleteExpense(Long expenseId) {
+    public void deleteExpense(Long userId, Long categoryId, Long expenseId) {
+
+        existUserAndCategory(categoryId, userId);
 
         if (!expenseRepository.existsById(expenseId)) {
             throw new ExpenseNotFoundException();
         }
         expenseRepository.deleteById(expenseId);
+    }
+
+    private void existUserAndCategory(Long categoryId, Long userId) {
+        if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
+            throw new MismatchedCategoryIdAndUserIdException();
+        }
     }
 }
