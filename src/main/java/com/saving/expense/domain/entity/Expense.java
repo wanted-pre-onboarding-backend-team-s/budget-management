@@ -42,6 +42,7 @@ public class Expense {
     }
 
     public void changeExpense(ExpenseRequestDto expenseRequestDto) {
+        this.categoryId = expenseRequestDto.getCategoryId();
         this.expenseMethod = ExpenseMethod.of(expenseRequestDto.getExpenseMethod());
         this.amount = expenseRequestDto.getAmount();
         this.content = expenseRequestDto.getContent();

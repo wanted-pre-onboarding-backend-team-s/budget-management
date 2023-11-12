@@ -22,54 +22,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/expenses")
 public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    @PostMapping("/categories/{categoryId}/expenses")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ExpenseResponseDto> createExpense(
             @RequestAttribute Long userId,
-            @PathVariable Long categoryId,
             @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
 
         return ApiResponse.created(
-                expenseService.createExpense(userId, categoryId, expenseRequestDto));
+                expenseService.createExpense(userId, expenseRequestDto));
     }
 
-    @PutMapping("/categories/{categoryId}/expenses/{expenseId}")
+    @PutMapping("/{expenseId}")
     public ApiResponse<String> updateExpense(
             @RequestAttribute Long userId,
-            @PathVariable Long categoryId,
             @PathVariable Long expenseId,
             @Valid @RequestBody ExpenseRequestDto expenseRequestDto) {
 
-        expenseService.updateExpense(userId, categoryId, expenseId, expenseRequestDto);
+        expenseService.updateExpense(userId, expenseId, expenseRequestDto);
         return ApiResponse.noContent();
     }
 
-    @DeleteMapping("/categories/{categoryId}/expenses/{expenseId}")
-    public ApiResponse<String> deleteExpense(
-            @RequestAttribute Long userId,
-            @PathVariable Long categoryId,
-            @PathVariable Long expenseId) {
-
-        expenseService.deleteExpense(userId, categoryId, expenseId);
-        return ApiResponse.noContent();
-    }
-
-    @GetMapping("/categories/{categoryId}/expenses/{expenseId}")
+    @GetMapping("/{expenseId}")
     public ApiResponse<ExpenseResponseDto> getExpense(
             @RequestAttribute Long userId,
-            @PathVariable Long categoryId,
             @PathVariable Long expenseId) {
 
         return ApiResponse.ok(
-                expenseService.getExpense(userId, categoryId, expenseId));
+                expenseService.getExpense(userId, expenseId));
     }
 
-    @GetMapping("/expenses")
+    @GetMapping
     public ApiResponse<ExpenseListResponseDto> expenseList(
             @RequestAttribute Long userId,
             @RequestParam(name = "start-date") String startDate,
@@ -81,5 +68,14 @@ public class ExpenseController {
         return ApiResponse.ok(
                 expenseService.expenseList(userId, startDate, endDate,
                         categoryId, minAmount, maxAmount));
+    }
+
+    @DeleteMapping("/{expenseId}")
+    public ApiResponse<String> deleteExpense(
+            @RequestAttribute Long userId,
+            @PathVariable Long expenseId) {
+
+        expenseService.deleteExpense(userId, expenseId);
+        return ApiResponse.noContent();
     }
 }

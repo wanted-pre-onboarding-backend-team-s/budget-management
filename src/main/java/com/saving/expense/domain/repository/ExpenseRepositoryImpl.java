@@ -5,9 +5,11 @@ import static com.saving.expense.domain.entity.QExpense.expense;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.saving.expense.dto.ExpenseResponseDto;
 import com.saving.expense.dto.SimpleExpenseDto;
 import com.saving.expense.dto.TotalExpenseByCategory;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -41,13 +43,13 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom{
             String endDate, Long categoryId, Boolean minAmount, Boolean maxAmount) {
 
         return jpaQueryFactory
-                .select(expense.amount.sum())
+                .select(expense.amount.sum().coalesce(0))
                 .from(expense)
                 .leftJoin(category)
                 .on(expense.categoryId.eq(category.id))
                 .where(category.userId.eq(userId)
                         .and(expense.expenseAt.between(startDate, endDate)
-                        .and(expense.isTotalExpenseApply.eq(1))))
+                                .and(expense.isTotalExpenseApply.eq(1))))
                 .fetchOne().longValue();
     }
 
@@ -70,5 +72,39 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom{
                 .groupBy(expense.categoryId)
                 .orderBy(expense.amount.sum().desc())
                 .fetch();
+    }
+
+    @Override
+    public Optional<ExpenseResponseDto> findByIdAndUserId(Long expenseId, Long userId) {
+
+        return Optional.ofNullable(
+                jpaQueryFactory
+                .select(Projections.constructor(
+                        ExpenseResponseDto.class,
+                        expense.id.as("expenseId"),
+                        expense.categoryId,
+                        expense.expenseMethod,
+                        expense.amount,
+                        expense.content,
+                        expense.isTotalExpenseApply,
+                        expense.expenseAt))
+                .from(expense)
+                .leftJoin(category)
+                .on(expense.categoryId.eq(category.id))
+                .where(category.userId.eq(userId).and(expense.id.eq(expenseId)))
+                .fetchOne());
+    }
+
+    @Override
+    public boolean existsByIdAndUserId(Long expenseId, Long userId) {
+
+        Integer fetchOne = jpaQueryFactory
+                .selectOne()
+                .from(expense)
+                .leftJoin(category)
+                .on(expense.categoryId.eq(category.id))
+                .where(category.userId.eq(userId).and(expense.id.eq(expenseId)))
+                .fetchFirst();
+        return fetchOne != null;
     }
 }

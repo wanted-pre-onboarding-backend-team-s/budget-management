@@ -27,48 +27,45 @@ public class ExpenseService {
 
     @Transactional
     public ExpenseResponseDto createExpense(
-            Long userId, Long categoryId, ExpenseRequestDto expenseRequestDto) {
+            Long userId, ExpenseRequestDto expenseRequestDto) {
 
-        existUserAndCategory(categoryId, userId);
+        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
 
-        if (!categoryRepository.existsById(categoryId)) {
+        if (!categoryRepository.existsById(expenseRequestDto.getCategoryId())) {
             throw new CategoryNotFoundException();
         }
 
         return new ExpenseResponseDto(
-                expenseRepository.save(expenseRequestDto.toEntity(categoryId)));
+                expenseRepository.save(expenseRequestDto.toEntity()));
     }
 
     @Transactional
     public void updateExpense(
-            Long userId, Long categoryId, Long expenseId, ExpenseRequestDto expenseRequestDto) {
+            Long userId, Long expenseId, ExpenseRequestDto expenseRequestDto) {
 
-        existUserAndCategory(categoryId, userId);
+        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
 
-        Expense savedExpense = expenseRepository.findByIdAndCategoryId(expenseId, categoryId)
+        Expense savedExpense = expenseRepository
+                .findByIdAndCategoryId(expenseId, expenseRequestDto.getCategoryId())
                 .orElseThrow(NotExistExpenseInCategoryException::new);
 
         savedExpense.changeExpense(expenseRequestDto);
     }
 
     @Transactional
-    public void deleteExpense(Long userId, Long categoryId, Long expenseId) {
+    public void deleteExpense(Long userId, Long expenseId) {
 
-        existUserAndCategory(categoryId, userId);
-
-        if (!expenseRepository.existsByIdAndCategoryId(expenseId, categoryId)) {
+        if (!expenseRepository.existsByIdAndUserId(expenseId, userId)) {
             throw new NotExistExpenseInCategoryException();
         }
         expenseRepository.deleteById(expenseId);
     }
 
     @Transactional(readOnly = true)
-    public ExpenseResponseDto getExpense(Long userId, Long categoryId, Long expenseId) {
+    public ExpenseResponseDto getExpense(Long userId, Long expenseId) {
 
-        existUserAndCategory(categoryId, userId);
-
-        return new ExpenseResponseDto(expenseRepository.findByIdAndCategoryId(expenseId, categoryId)
-                .orElseThrow(NotExistExpenseInCategoryException::new));
+        return expenseRepository.findByIdAndUserId(expenseId, userId)
+                .orElseThrow(NotExistExpenseInCategoryException::new);
     }
 
     @Transactional(readOnly = true)

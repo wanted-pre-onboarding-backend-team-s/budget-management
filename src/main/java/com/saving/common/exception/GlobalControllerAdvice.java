@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -43,12 +44,23 @@ public class GlobalControllerAdvice {
                 .body(ErrorResponse.of("E003", e.getMessage()));
     }
 
+    @ExceptionHandler(MissingPathVariableException.class)
+    protected ResponseEntity<ErrorResponse> missingPathVariableExceptionHandler(
+            MissingPathVariableException e) {
+
+        log.error("[HttpRequestMethodNotSupportedException] ex", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of("E004", e.getMessage()));
+
+    }
+
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
 
         return ResponseEntity.status(e.getErrorType().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorType()));
     }
+
 
     private String getMessage(MethodArgumentNotValidException e) {
 
