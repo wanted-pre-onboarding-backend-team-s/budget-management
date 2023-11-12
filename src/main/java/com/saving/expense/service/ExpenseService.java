@@ -58,6 +58,15 @@ public class ExpenseService {
         expenseRepository.deleteById(expenseId);
     }
 
+    @Transactional(readOnly = true)
+    public ExpenseResponseDto getExpense(Long userId, Long categoryId, Long expenseId) {
+
+        existUserAndCategory(categoryId, userId);
+
+        return new ExpenseResponseDto(expenseRepository.findByIdAndCategoryId(expenseId, categoryId)
+                .orElseThrow(NotExistExpenseInCategoryException::new));
+    }
+
     private void existUserAndCategory(Long categoryId, Long userId) {
         if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
             throw new MismatchedCategoryIdAndUserIdException();
