@@ -1,6 +1,7 @@
 package com.saving.expense.controller;
 
 import com.saving.common.response.ApiResponse;
+import com.saving.expense.dto.ExpenseListResponseDto;
 import com.saving.expense.dto.ExpenseRequestDto;
 import com.saving.expense.dto.ExpenseResponseDto;
 import com.saving.expense.service.ExpenseService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,5 +67,19 @@ public class ExpenseController {
 
         return ApiResponse.ok(
                 expenseService.getExpense(userId, categoryId, expenseId));
+    }
+
+    @GetMapping("/expenses")
+    public ApiResponse<ExpenseListResponseDto> expenseList(
+            @RequestAttribute Long userId,
+            @RequestParam(name = "start-date") String startDate,
+            @RequestParam(name = "end-date") String endDate,
+            @RequestParam(name = "category-id", required = false) Long categoryId,
+            @RequestParam(name = "min-amount", required = false) Boolean minAmount,
+            @RequestParam(name = "max-amount", required = false) Boolean maxAmount) {
+
+        return ApiResponse.ok(
+                expenseService.expenseList(userId, startDate, endDate,
+                        categoryId, minAmount, maxAmount));
     }
 }
