@@ -13,10 +13,6 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor
 public class ExpenseRequestDto {
 
-    @NotNull(message = "필수 입력값 입니다.")
-    @Range(min = 1, message = "1 이상의 값을 입력해주세요.")
-    private Long categoryId;
-
     @NotBlank(message = "필수 입력값 입니다.")
     @Size(min = 1, max = 1, message = "C, M, A 중 하나를 입력해야합니다.")
     private String expenseMethod;
@@ -41,7 +37,6 @@ public class ExpenseRequestDto {
 
     public Expense toEntity() {
         return Expense.builder()
-                .categoryId(categoryId)
                 .expenseMethod(expenseMethod)
                 .amount(amount)
                 .content(content)

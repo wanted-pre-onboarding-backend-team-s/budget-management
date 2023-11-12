@@ -6,8 +6,8 @@ import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
 import com.saving.expense.domain.entity.Expense;
 import com.saving.expense.domain.repository.ExpenseRepository;
 import com.saving.expense.dto.ExpenseRequestDto;
-import com.saving.expense.dto.CreatedExpenseResponseDto;
-import com.saving.expense.exception.ExpenseNotFoundException;
+import com.saving.expense.dto.ExpenseResponseDto;
+import com.saving.expense.exception.NotExistExpenseInCategoryException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,27 +22,27 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public CreatedExpenseResponseDto createExpense(
-            Long userId, ExpenseRequestDto expenseRequestDto) {
+    public ExpenseResponseDto createExpense(
+            Long userId, Long categoryId, ExpenseRequestDto expenseRequestDto) {
 
-        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
+        existUserAndCategory(categoryId, userId);
 
-        if (!categoryRepository.existsById(expenseRequestDto.getCategoryId())) {
+        if (!categoryRepository.existsById(categoryId)) {
             throw new CategoryNotFoundException();
         }
 
-        return new CreatedExpenseResponseDto(
+        return new ExpenseResponseDto(
                 expenseRepository.save(expenseRequestDto.toEntity()));
     }
 
     @Transactional
     public void updateExpense(
-            Long userId, Long expenseId, ExpenseRequestDto expenseRequestDto) {
+            Long userId, Long categoryId, Long expenseId, ExpenseRequestDto expenseRequestDto) {
 
-        existUserAndCategory(expenseRequestDto.getCategoryId(), userId);
+        existUserAndCategory(categoryId, userId);
 
-        Expense savedExpense = expenseRepository.findById(expenseId)
-                .orElseThrow(ExpenseNotFoundException::new);
+        Expense savedExpense = expenseRepository.findByIdAndCategoryId(expenseId, categoryId)
+                .orElseThrow(NotExistExpenseInCategoryException::new);
 
         savedExpense.changeExpense(expenseRequestDto);
     }
@@ -52,8 +52,8 @@ public class ExpenseService {
 
         existUserAndCategory(categoryId, userId);
 
-        if (!expenseRepository.existsById(expenseId)) {
-            throw new ExpenseNotFoundException();
+        if (!expenseRepository.existsByIdAndCategoryId(expenseId, categoryId)) {
+            throw new NotExistExpenseInCategoryException();
         }
         expenseRepository.deleteById(expenseId);
     }
