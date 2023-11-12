@@ -37,6 +37,13 @@ public class BudgetService {
         return BudgetResponse.from(budget);
     }
 
+    @Transactional
+    public void removeBudget(Long userId, Long budgetId) {
+        Budget budget = findBudget(budgetId);
+        budget.verifyMatchUser(userId);
+        budgetRepository.delete(budget);
+    }
+
     private void validateDuplicateCategory(Long userId, String category) {
         if (budgetRepository.existsByUserIdAndCategory(userId, Category.of(category))) {
             throw new DuplicateBudgetCategoryException();
