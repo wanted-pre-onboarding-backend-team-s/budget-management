@@ -6,8 +6,10 @@ import com.wanted.bobo.budget.service.BudgetService;
 import com.wanted.bobo.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +26,12 @@ public class BudgetController {
 
     private final BudgetService budgetService;
 
+    @GetMapping
+    public ApiResponse<List<BudgetResponse>> getBudgets(
+            @RequestAttribute Long userId) {
+        return ApiResponse.ok(budgetService.getBudgets(userId));
+    }
+
     @PostMapping
     public ApiResponse<BudgetResponse> makeBudget(
             @RequestAttribute Long userId,
@@ -31,18 +39,18 @@ public class BudgetController {
         return ApiResponse.created(budgetService.makeBudget(userId, request));
     }
 
-    @PutMapping("/{budget_id}")
+    @PutMapping("/{id}")
     public ApiResponse<BudgetResponse> reviseBudget(
             @RequestAttribute Long userId,
-            @PathVariable("budget_id") Long budgetId,
+            @PathVariable("id") Long budgetId,
             @Valid @RequestBody BudgetRequest request) {
         return ApiResponse.created(budgetService.reviseBudget(userId, budgetId, request));
     }
 
-    @DeleteMapping("/{budget_id}")
+    @DeleteMapping("/{id}")
     public ApiResponse<Void> reviseBudget(
             @RequestAttribute Long userId,
-            @PathVariable("budget_id") Long budgetId) {
+            @PathVariable("id") Long budgetId) {
         budgetService.removeBudget(userId, budgetId);
         return ApiResponse.noContent();
     }

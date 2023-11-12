@@ -7,6 +7,8 @@ import com.wanted.bobo.budget.dto.BudgetResponse;
 import com.wanted.bobo.budget.exception.DuplicateBudgetCategoryException;
 import com.wanted.bobo.budget.exception.NotFoundBudgetException;
 import com.wanted.bobo.category.Category;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class BudgetService {
 
     private final BudgetRepository budgetRepository;
+
+    @Transactional(readOnly = true)
+    public List<BudgetResponse> getBudgets(Long userId) {
+        return budgetRepository.findAllByUserId(userId)
+                               .stream()
+                               .map(BudgetResponse::from)
+                               .toList();
+    }
 
     @Transactional
     public BudgetResponse makeBudget(Long userId, BudgetRequest request) {
