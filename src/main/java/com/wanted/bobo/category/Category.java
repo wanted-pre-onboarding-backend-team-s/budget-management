@@ -15,7 +15,7 @@ public enum Category {
     HOUSING("C005", "주거비"),
     HEALTHCARE("C006", "의료비"),
     ENTERTAINMENT("C007", "문화비"),
-    APPAREL("C008", "의류비");
+    CLOTHING("C008", "의류비");
 
     private final String code;
     private final String name;
