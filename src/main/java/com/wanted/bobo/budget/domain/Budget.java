@@ -1,5 +1,7 @@
 package com.wanted.bobo.budget.domain;
 
+import com.wanted.bobo.budget.dto.BudgetRequest;
+import com.wanted.bobo.budget.exception.NotMatchUserException;
 import com.wanted.bobo.category.Category;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,6 +34,20 @@ public class Budget {
         this.amount = amount;
         this.userId = userId;
         this.category = category;
+    }
+
+    public void verifyMatchUser(Long userId) {
+        if(!this.userId.equals(userId)) {
+            throw new NotMatchUserException();
+        }
+    }
+    public boolean verifyEqualCategory(String category) {
+        return this.category.equals(Category.of(category));
+    }
+
+    public void changeInfo(BudgetRequest request) {
+        this.amount = request.getAmount();
+        this.category = Category.of(request.getCategory());
     }
 
 }
