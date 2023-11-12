@@ -1,6 +1,5 @@
 package com.saving.common.interceptor;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.saving.common.util.JwtUtil;
 import com.saving.user.domain.repository.UserRepository;
 import com.saving.user.exception.InvalidTokenException;
@@ -54,8 +53,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
             throw new UserNotFoundException();
 
-        } catch (TokenExpiredException e) {
-            log.error("[TokenExpiredException] ex", e);
+        } catch (JwtExpiredException e) {
+            log.error("[JwtExpiredException] ex", e);
             throw new JwtExpiredException();
 
         } catch (Exception e) {

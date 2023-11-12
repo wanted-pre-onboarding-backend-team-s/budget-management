@@ -4,7 +4,7 @@ import com.saving.expense.domain.entity.Expense;
 import lombok.Getter;
 
 @Getter
-public class CreatedExpenseResponseDto {
+public class ExpenseResponseDto {
 
     private final Long expenseId;
     private final Long categoryId;
@@ -14,7 +14,7 @@ public class CreatedExpenseResponseDto {
     private final int isTotalExpenseApply;
     private final String expenseAt;
 
-    public CreatedExpenseResponseDto(Expense expense) {
+    public ExpenseResponseDto(Expense expense) {
         this.expenseId = expense.getId();
         this.categoryId = expense.getCategoryId();
         this.expenseMethod = expense.getExpenseMethod().getValue();
