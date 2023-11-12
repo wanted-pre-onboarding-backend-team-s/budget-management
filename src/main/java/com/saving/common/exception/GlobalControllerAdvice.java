@@ -16,26 +16,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<ErrorResponse> methodArgumentValidExceptionHandler(MethodArgumentNotValidException e) {
+    protected ResponseEntity<ErrorResponse> methodArgumentValidExceptionHandler(
+            MethodArgumentNotValidException e) {
+
         log.error("[methodArgumentValidExceptionHandler] ex", e);
         String message = getMessage(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of("E001", message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of("E001", message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    protected ResponseEntity<ErrorResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
+    protected ResponseEntity<ErrorResponse> httpMessageNotReadableExceptionHandler(
+            HttpMessageNotReadableException e) {
+
         log.error("[httpMessageNotReadableExceptionHandler] ex", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of("E002", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of("E002", e.getMessage()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    protected ResponseEntity<ErrorResponse> httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
+    protected ResponseEntity<ErrorResponse> httpRequestMethodNotSupportedExceptionHandler(
+            HttpRequestMethodNotSupportedException e) {
+
         log.error("[HttpRequestMethodNotSupportedException] ex", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of("E003", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of("E003", e.getMessage()));
     }
 
     @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<ErrorResponse> handleWantedException(CustomException e) {
+    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+
         return ResponseEntity.status(e.getErrorType().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorType()));
     }
@@ -45,7 +55,8 @@ public class GlobalControllerAdvice {
         StringJoiner joiner = new StringJoiner(", ");
 
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            String message = "[" + fieldError.getField() + "]은(는) " + fieldError.getDefaultMessage();
+            String message = "[" + fieldError.getField() + "]은(는) "
+                    + fieldError.getDefaultMessage();
             joiner.add(message);
         }
         return joiner.toString();
