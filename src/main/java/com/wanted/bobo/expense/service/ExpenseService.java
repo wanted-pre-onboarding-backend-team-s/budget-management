@@ -3,11 +3,11 @@ package com.wanted.bobo.expense.service;
 import com.wanted.bobo.expense.domain.Expense;
 import com.wanted.bobo.expense.domain.ExpenseRepository;
 import com.wanted.bobo.expense.dto.ExpenseFilter;
+import com.wanted.bobo.expense.dto.ExpenseListResponse;
 import com.wanted.bobo.expense.dto.ExpenseRequest;
 import com.wanted.bobo.expense.dto.ExpenseResponse;
 import com.wanted.bobo.expense.exception.InvalidAmountRangeException;
 import com.wanted.bobo.expense.exception.NotFoundExpenseException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
 
     @Transactional(readOnly = true)
-    public List<ExpenseResponse> getExpenses(Long userId, ExpenseFilter filter) {
+    public ExpenseListResponse getExpenses(Long userId, ExpenseFilter filter) {
         if (!filter.isMinMaxValid()) {
             throw new InvalidAmountRangeException();
         }

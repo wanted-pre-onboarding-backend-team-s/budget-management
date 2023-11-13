@@ -2,12 +2,12 @@ package com.wanted.bobo.expense.contoller;
 
 import com.wanted.bobo.common.response.ApiResponse;
 import com.wanted.bobo.expense.dto.ExpenseFilter;
+import com.wanted.bobo.expense.dto.ExpenseListResponse;
 import com.wanted.bobo.expense.dto.ExpenseRequest;
 import com.wanted.bobo.expense.dto.ExpenseResponse;
 import com.wanted.bobo.expense.service.ExpenseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +31,7 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping
-    public ApiResponse<List<ExpenseResponse>> getExpenses(
+    public ApiResponse<ExpenseListResponse> getExpenses(
             @RequestAttribute Long userId,
             @Valid @ParameterObject @ModelAttribute ExpenseFilter filter) {
         return ApiResponse.ok(expenseService.getExpenses(userId, filter));

@@ -1,9 +1,8 @@
 package com.wanted.bobo.expense.domain;
 
 import com.wanted.bobo.expense.dto.ExpenseFilter;
-import com.wanted.bobo.expense.dto.ExpenseResponse;
-import java.util.List;
+import com.wanted.bobo.expense.dto.ExpenseListResponse;
 
 public interface ExpenseRepositoryCustom {
-    List<ExpenseResponse> findByCondition(Long userId, ExpenseFilter condition);
+    ExpenseListResponse findByCondition(Long userId, ExpenseFilter condition);
 }
