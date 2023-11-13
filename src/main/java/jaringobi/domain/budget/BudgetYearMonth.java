@@ -8,6 +8,7 @@ import jaringobi.exception.budget.InvalidBudgetException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -36,5 +37,9 @@ public class BudgetYearMonth {
 
     private static boolean isValidYearMonthFormat(String yearMonthString) {
         return yearMonthString.matches(YEAR_MONTH_PATTERN);
+    }
+
+    public boolean isEmptyMonth() {
+        return Objects.isNull(this.month);
     }
 }

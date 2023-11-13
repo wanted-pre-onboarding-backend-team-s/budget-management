@@ -44,10 +44,9 @@ public class Budget extends BaseTimeEntity {
     @Builder
     public Budget(final Long id, final BudgetYearMonth yearMonth, final User user,
             final List<CategoryBudget> categoryBudgets) {
-        verifyNonNull(yearMonth);
+        verifyYearNonEmpty(yearMonth);
         this.id = id;
         this.yearMonth = yearMonth;
-
         if (Objects.nonNull(user)) {
             setUser(user);
         }
@@ -57,18 +56,19 @@ public class Budget extends BaseTimeEntity {
         }
     }
 
-    private void verifyNonNull(BudgetYearMonth yearMonth) {
-        if (Objects.isNull(yearMonth)) {
+    private void verifyYearNonEmpty(BudgetYearMonth yearMonth) {
+        if (Objects.isNull(yearMonth) || yearMonth.isEmptyMonth()) {
             throw new InvalidBudgetException();
         }
     }
 
     public void setCategoryBudgets(List<CategoryBudget> categoryBudgets) {
-        if (this.categoryBudgets.isEmpty()) {
-            this.categoryBudgets = categoryBudgets.stream()
-                    .map(categoryBudget -> CategoryBudget.withBudget(this, categoryBudget))
-                    .toList();
+        if (!this.categoryBudgets.isEmpty()) {
+            throw new InvalidBudgetException();
         }
+        this.categoryBudgets = categoryBudgets.stream()
+                .map(categoryBudget -> CategoryBudget.withBudget(this, categoryBudget))
+                .toList();
     }
 
     public void setUser(User user) {
@@ -79,5 +79,17 @@ public class Budget extends BaseTimeEntity {
         if (Objects.nonNull(user)) {
             this.user = user;
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BudgetYearMonth getYearMonth() {
+        return yearMonth;
+    }
+
+    public List<CategoryBudget> getCategoryBudgets() {
+        return categoryBudgets;
     }
 }
