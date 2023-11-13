@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+
+    @GetMapping("/{id}")
+    public ApiResponse<ExpenseResponse> getExpense(
+            @RequestAttribute Long userId,
+            @PathVariable("id") Long expenseId) {
+        return ApiResponse.ok(expenseService.getExpense(userId, expenseId));
+    }
+
 
     @PostMapping
     public ApiResponse<ExpenseResponse> registerExpense(

@@ -15,9 +15,17 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
 
+    @Transactional(readOnly = true)
+    public ExpenseResponse getExpense(Long userId, Long expenseId) {
+        Expense expense = findExpense(expenseId);
+        expense.verifyMatchUser(userId);
+
+        return ExpenseResponse.from(expense);
+    }
+
     @Transactional
     public ExpenseResponse registerExpense(Long userId, ExpenseRequest request) {
-       return ExpenseResponse.from(expenseRepository.save(request.toEntity(userId)));
+        return ExpenseResponse.from(expenseRepository.save(request.toEntity(userId)));
     }
 
     @Transactional
