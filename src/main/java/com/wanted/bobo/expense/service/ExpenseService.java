@@ -36,6 +36,13 @@ public class ExpenseService {
         expense.toggleExclude();
     }
 
+    @Transactional
+    public void removeExpense(Long userId, Long expenseId) {
+        Expense expense = findExpense(expenseId);
+        expense.verifyMatchUser(userId);
+        expenseRepository.delete(expense);
+    }
+
     private Expense findExpense(Long id) {
         return expenseRepository.findById(id).orElseThrow(NotFoundExpenseException::new);
     }

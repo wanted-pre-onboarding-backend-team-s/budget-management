@@ -7,6 +7,7 @@ import com.wanted.bobo.expense.service.ExpenseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,14 @@ public class ExpenseController {
             @RequestAttribute Long userId,
             @PathVariable("id") Long expenseId) {
         expenseService.excludeExpense(userId, expenseId);
+        return ApiResponse.noContent();
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> removeExpense(
+            @RequestAttribute Long userId,
+            @PathVariable("id") Long expenseId) {
+        expenseService.removeExpense(userId, expenseId);
         return ApiResponse.noContent();
     }
 
