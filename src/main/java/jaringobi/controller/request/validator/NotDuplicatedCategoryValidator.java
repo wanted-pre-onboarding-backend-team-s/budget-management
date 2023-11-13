@@ -25,7 +25,7 @@ public class NotDuplicatedCategoryValidator implements ConstraintValidator<NotDu
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     private static boolean alreadyInRequests(Set<Long> categorySet, BudgetByCategoryRequest request) {
