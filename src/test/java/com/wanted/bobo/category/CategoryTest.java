@@ -2,7 +2,6 @@ package com.wanted.bobo.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.wanted.bobo.category.dto.CategoryResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,7 @@ class CategoryTest {
     @DisplayName("카테고리 목록 조회 성공")
     @Test
     void category_list_success() {
-        List<CategoryResponse> result = Category.toList();
+        List<Category> result = Category.toList();
         assertThat(result.size()).isEqualTo(8);
     }
 
@@ -24,9 +23,8 @@ class CategoryTest {
         StopWatch stopWatch = new StopWatch("category");
 
         stopWatch.start("byStream");
-        List<CategoryResponse> cr = Arrays.stream(Category.values())
-                                          .map(CategoryResponse::new)
-                                          .toList();
+        List<Category> cr = Arrays.stream(Category.values())
+                                  .toList();
         stopWatch.stop();
 
         stopWatch.start("byMap");

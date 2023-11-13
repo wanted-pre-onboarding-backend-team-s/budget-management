@@ -1,7 +1,7 @@
 package com.wanted.bobo.budget.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wanted.bobo.budget.domain.Budget;
+import com.wanted.bobo.category.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,15 +13,13 @@ public class BudgetResponse {
 
     private Long id;
     private int amount;
-
-    @JsonProperty("category_code")
-    private String category;
+    private Category category;
 
     public static BudgetResponse from(Budget budget) {
         return BudgetResponse.builder()
                              .id(budget.getId())
                              .amount(budget.getAmount())
-                             .category(budget.getCategory().getCode())
+                             .category(budget.getCategory())
                              .build();
     }
 }

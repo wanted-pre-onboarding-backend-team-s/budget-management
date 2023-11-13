@@ -1,7 +1,6 @@
 package com.wanted.bobo.category.controller;
 
 import com.wanted.bobo.category.Category;
-import com.wanted.bobo.category.dto.CategoryResponse;
 import com.wanted.bobo.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
     @GetMapping()
-    public ApiResponse<List<CategoryResponse>> categoryList() {
+    public ApiResponse<List<Category>> categoryList() {
         return ApiResponse.ok(Category.toList());
     }
 
