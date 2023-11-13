@@ -28,13 +28,13 @@ public class BudgetService {
     }
 
     @Transactional
-    public BudgetResponse makeBudget(Long userId, BudgetRequest request) {
+    public BudgetResponse setBudget(Long userId, BudgetRequest request) {
         validateDuplicateCategory(userId, request.getCategory());
         return BudgetResponse.from(budgetRepository.save(request.toEntity(userId)));
     }
 
     @Transactional
-    public BudgetResponse reviseBudget(Long userId, Long budgetId, BudgetRequest request) {
+    public BudgetResponse modifyBudget(Long userId, Long budgetId, BudgetRequest request) {
         Budget budget = findBudget(budgetId);
         budget.verifyMatchUser(userId);
 

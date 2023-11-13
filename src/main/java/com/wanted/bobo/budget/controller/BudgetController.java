@@ -42,18 +42,18 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ApiResponse<BudgetResponse> makeBudget(
+    public ApiResponse<BudgetResponse> setBudget(
             @RequestAttribute Long userId,
             @Valid @RequestBody BudgetRequest request) {
-        return ApiResponse.created(budgetService.makeBudget(userId, request));
+        return ApiResponse.created(budgetService.setBudget(userId, request));
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<BudgetResponse> reviseBudget(
+    public ApiResponse<BudgetResponse> modifyBudget(
             @RequestAttribute Long userId,
             @PathVariable("id") Long budgetId,
             @Valid @RequestBody BudgetRequest request) {
-        return ApiResponse.created(budgetService.reviseBudget(userId, budgetId, request));
+        return ApiResponse.created(budgetService.modifyBudget(userId, budgetId, request));
     }
 
     @DeleteMapping("/{id}")

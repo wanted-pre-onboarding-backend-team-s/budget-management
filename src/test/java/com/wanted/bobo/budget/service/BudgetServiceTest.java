@@ -66,7 +66,7 @@ class BudgetServiceTest {
         when(budgetRepository.existsByUserIdAndCategory(any(), any())).thenReturn(false);
         when(budgetRepository.save(any())).thenReturn(budget);
 
-        BudgetResponse response = budgetService.makeBudget(TEST_USER_ID, request);
+        BudgetResponse response = budgetService.setBudget(TEST_USER_ID, request);
 
         assertThat(response.getAmount()).isEqualTo(request.getAmount());
         assertThat(response.getCategory()).isEqualTo(request.getCategory());
@@ -78,18 +78,18 @@ class BudgetServiceTest {
         BudgetRequest request = new BudgetRequest(TEST_AMOUNT, TEST_CATEGORY_CODE);
         when(budgetRepository.existsByUserIdAndCategory(any(), any())).thenReturn(true);
 
-        assertThatThrownBy(() -> budgetService.makeBudget(TEST_USER_ID, request))
+        assertThatThrownBy(() -> budgetService.setBudget(TEST_USER_ID, request))
                 .isInstanceOf(DuplicateBudgetCategoryException.class);
     }
 
     @DisplayName("예산 수정 성공")
     @Test
-    void revise_budget_success() {
+    void modify_budget_success() {
         BudgetRequest request = new BudgetRequest(TEST_AMOUNT, TEST_UPDATE_CATEGORY_CODE);
         when(budgetRepository.findById(any())).thenReturn(Optional.of(budget));
         when(budgetRepository.existsByUserIdAndCategory(any(), any())).thenReturn(false);
 
-        BudgetResponse response = budgetService.reviseBudget(TEST_USER_ID, budget.getId(), request);
+        BudgetResponse response = budgetService.modifyBudget(TEST_USER_ID, budget.getId(), request);
 
         assertThat(response.getAmount()).isEqualTo(request.getAmount());
         assertThat(response.getCategory()).isEqualTo(request.getCategory());
@@ -97,27 +97,27 @@ class BudgetServiceTest {
 
     @DisplayName("예산 수정 실패 - 예산 정보가 없을때")
     @Test
-    void revise_budget_fail_by_no_budget() {
+    void modify_budget_fail_by_no_budget() {
         BudgetRequest request = new BudgetRequest(TEST_AMOUNT, TEST_UPDATE_CATEGORY_CODE);
         when(budgetRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> budgetService.reviseBudget(TEST_USER_ID, budget.getId(), request))
+        assertThatThrownBy(() -> budgetService.modifyBudget(TEST_USER_ID, budget.getId(), request))
                 .isInstanceOf(NotFoundBudgetException.class);
     }
 
     @DisplayName("예산 수정 실패 - 작성자가 일치하지 않을때")
     @Test
-    void revise_budget_fail_by_not_match_user() {
+    void modify_budget_fail_by_not_match_user() {
         BudgetRequest request = new BudgetRequest(TEST_AMOUNT, TEST_UPDATE_CATEGORY_CODE);
         when(budgetRepository.findById(any())).thenReturn(Optional.of(budget));
 
-        assertThatThrownBy(() -> budgetService.reviseBudget(TEST_ANOTHER_USER_ID, budget.getId(), request))
+        assertThatThrownBy(() -> budgetService.modifyBudget(TEST_ANOTHER_USER_ID, budget.getId(), request))
                 .isInstanceOf(NotMatchUserException.class);
     }
 
     @DisplayName("예산 삭제 성공")
     @Test
-    void removeBudget() {
+    void remove_budget() {
         when(budgetRepository.findById(any())).thenReturn(Optional.of(budget));
         budgetService.removeBudget(TEST_USER_ID, budget.getId());
     }
