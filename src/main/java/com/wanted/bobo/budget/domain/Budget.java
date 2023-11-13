@@ -1,7 +1,7 @@
 package com.wanted.bobo.budget.domain;
 
 import com.wanted.bobo.budget.dto.BudgetRequest;
-import com.wanted.bobo.budget.exception.NotMatchUserException;
+import com.wanted.bobo.budget.exception.NotMatchBudgetUserException;
 import com.wanted.bobo.category.Category;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,7 +38,7 @@ public class Budget {
 
     public void verifyMatchUser(Long userId) {
         if(!this.userId.equals(userId)) {
-            throw new NotMatchUserException();
+            throw new NotMatchBudgetUserException();
         }
     }
     public boolean verifyEqualCategory(String category) {

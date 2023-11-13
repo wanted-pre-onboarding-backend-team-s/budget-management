@@ -2,7 +2,7 @@ package com.wanted.bobo.common.error;
 
 import com.wanted.bobo.budget.exception.DuplicateBudgetCategoryException;
 import com.wanted.bobo.budget.exception.NotFoundBudgetException;
-import com.wanted.bobo.budget.exception.NotMatchUserException;
+import com.wanted.bobo.budget.exception.NotMatchBudgetUserException;
 import com.wanted.bobo.category.exception.NotAvailableCategoryException;
 import com.wanted.bobo.common.jwt.exception.ExpiredTokenException;
 import com.wanted.bobo.common.jwt.exception.MissingRequestHeaderAuthorizationException;
@@ -31,7 +31,7 @@ public enum ErrorType {
 
     B001("B001", "이미 등록된 예산 카테고리 입니다.", DuplicateBudgetCategoryException.class, HttpStatus.CONFLICT),
     B002("B002", "존재하지 않는 예산 정보 입니다.", NotFoundBudgetException.class, HttpStatus.NOT_FOUND),
-    B003("B003", "해당 예산 정보에 수정(삭제) 권한이 없습니다.", NotMatchUserException.class, HttpStatus.FORBIDDEN),
+    B003("B003", "해당 예산 정보에 수정(삭제) 권한이 없습니다.", NotMatchBudgetUserException.class, HttpStatus.FORBIDDEN),
 
     E001("E001", "존재하지 않는 지출 정보 입니다.", NotFoundExpenseException.class, HttpStatus.NOT_FOUND),
     E002("E002", "해당 지출 정보에 수정(삭제) 권한이 없습니다.", NotMatchExpenseUserException.class, HttpStatus.FORBIDDEN);

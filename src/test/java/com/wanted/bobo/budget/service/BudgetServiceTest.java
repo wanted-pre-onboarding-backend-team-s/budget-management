@@ -10,7 +10,7 @@ import com.wanted.bobo.budget.dto.BudgetRequest;
 import com.wanted.bobo.budget.dto.BudgetResponse;
 import com.wanted.bobo.budget.exception.DuplicateBudgetCategoryException;
 import com.wanted.bobo.budget.exception.NotFoundBudgetException;
-import com.wanted.bobo.budget.exception.NotMatchUserException;
+import com.wanted.bobo.budget.exception.NotMatchBudgetUserException;
 import com.wanted.bobo.category.Category;
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +112,7 @@ class BudgetServiceTest {
         when(budgetRepository.findById(any())).thenReturn(Optional.of(budget));
 
         assertThatThrownBy(() -> budgetService.modifyBudget(TEST_ANOTHER_USER_ID, budget.getId(), request))
-                .isInstanceOf(NotMatchUserException.class);
+                .isInstanceOf(NotMatchBudgetUserException.class);
     }
 
     @DisplayName("예산 삭제 성공")
