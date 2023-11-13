@@ -1,8 +1,10 @@
 package com.wanted.bobo.budget.controller;
 
+import com.wanted.bobo.budget.dto.BudgetRecommendationResponse;
 import com.wanted.bobo.budget.dto.BudgetRequest;
 import com.wanted.bobo.budget.dto.BudgetResponse;
 import com.wanted.bobo.budget.service.BudgetService;
+import com.wanted.bobo.budget.service.BudgetStatService;
 import com.wanted.bobo.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,6 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BudgetController {
 
     private final BudgetService budgetService;
+    private final BudgetStatService budgetStatService;
+
+    @GetMapping("/rec/{total_amount}")
+    public ApiResponse<BudgetRecommendationResponse> recBudget(
+            @PathVariable("total_amount") int amount) {
+        return ApiResponse.ok(budgetStatService.recommendBudget(amount));
+    }
 
     @GetMapping
     public ApiResponse<List<BudgetResponse>> getBudgets(

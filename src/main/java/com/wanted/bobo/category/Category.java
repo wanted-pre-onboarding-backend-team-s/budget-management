@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum Category {
+    ETC("C000", "기타"),
     FOOD("C001", "식비"),
     TRAFFIC("C002", "교통비"),
     COMMUNICATION("C003", "통신비"),
@@ -36,6 +37,7 @@ public enum Category {
     public static List<CategoryResponse> toList() {
         return CATEGORY_MAP.values()
                            .stream()
+                           .filter(category -> category != ETC)
                            .map(CategoryResponse::new)
                            .toList();
     }
