@@ -31,6 +31,9 @@ public class DatabaseCleaner implements InitializingBean{
                     if (entityName.equals("user")) {
                         return entityName.concat("s");
                     }
+                    if (entityName.equals("categorybudget")) {
+                        return "budget_by_category";
+                    }
                     return entityName;
                 })
                 .toList();
