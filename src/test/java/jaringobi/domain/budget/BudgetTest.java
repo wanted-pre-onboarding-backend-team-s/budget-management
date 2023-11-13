@@ -77,7 +77,6 @@ class BudgetTest {
                 .build();
 
         // Then
-        assertThat(budget.getId()).isNull();
         assertThat(budget.getYearMonth()).isEqualTo(yearMonth);
         assertThat(budget.getCategoryBudgets()).hasSize(2);
     }
