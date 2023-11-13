@@ -28,7 +28,7 @@ public class Expense {
     private int amount;
     private Long userId;
     private String memo;
-    private boolean isExcepted;
+    private boolean isExclude;
     private LocalDate date;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Expense {
         this.category = category;
         this.memo = memo;
         this.date = date;
-        this.isExcepted = false;
+        this.isExclude = false;
     }
 
     public void verifyMatchUser(Long userId) {
@@ -55,5 +55,9 @@ public class Expense {
         this.category = Category.of(request.getCategory());
         this.memo = request.getMemo();
         this.date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public void toggleExclude() {
+        this.isExclude = !isExclude;
     }
 }
