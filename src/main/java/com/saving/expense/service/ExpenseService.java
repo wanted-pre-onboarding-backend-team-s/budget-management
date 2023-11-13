@@ -1,5 +1,7 @@
 package com.saving.expense.service;
 
+import com.saving.category.budget.domain.repository.BudgetRepository;
+import com.saving.category.budget.dto.ResultFoundCategoryAndBudgetDto;
 import com.saving.category.domain.repository.CategoryRepository;
 import com.saving.category.exception.CategoryNotFoundException;
 import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
@@ -9,11 +11,22 @@ import com.saving.expense.dto.ExpenseListResponseDto;
 import com.saving.expense.dto.ExpenseRequestDto;
 import com.saving.expense.dto.ExpenseResponseDto;
 import com.saving.expense.dto.SimpleExpenseDto;
+import com.saving.expense.dto.TodayExpenseNoticeDto;
 import com.saving.expense.dto.TotalExpenseByCategory;
 import com.saving.expense.exception.NotExistExpenseInCategoryException;
+import com.saving.expense.vo.CalcTodayCategoryExpenseVo;
+import com.saving.user.domain.entity.User;
+import com.saving.user.domain.repository.UserRepository;
+import com.saving.webhook.WebhookClient;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +35,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ExpenseService {
 
-    private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final BudgetRepository budgetRepository;
+    private final ExpenseRepository expenseRepository;
+    private final WebhookClient webhookClient;
+
+    @Value("${webhook.api.url}")
+    private String webhookUrl;
 
     @Transactional
     public ExpenseResponseDto createExpense(
@@ -96,5 +115,53 @@ public class ExpenseService {
         if (!categoryRepository.existsByIdAndUserId(categoryId, userId)) {
             throw new MismatchedCategoryIdAndUserIdException();
         }
+    }
+
+    @Scheduled(cron = "0 0 20 * * *", zone = "Asia/Seoul")
+    public void sendDiscordWebhookTodayExpenseNoticeMessage() {
+        log.debug("스케줄링 작업 시작");
+        List<User> userList = userRepository.findByIsTodayExpenseNoticeIsTrue();
+
+        userList.stream()
+                .parallel()
+                .forEach(this::sendAsyncWebhookMessage);
+    }
+
+    @Async
+    public void sendAsyncWebhookMessage(User user) {
+
+        List<ResultFoundCategoryAndBudgetDto> foundByCategoryIdAndCategoryNameAndAmount =
+                budgetRepository.findByCategoryAndBudget(
+                        user.getId(), String.valueOf(YearMonth.now().atDay(1)));
+
+        LocalDate today = LocalDate.now();
+
+        List<CalcTodayCategoryExpenseVo> list = new ArrayList<>();
+        for (ResultFoundCategoryAndBudgetDto resultFoundCategoryAndBudgetDto
+                : foundByCategoryIdAndCategoryNameAndAmount) {
+
+            Long categoryId = resultFoundCategoryAndBudgetDto.getCategoryId();
+            String categoryName = resultFoundCategoryAndBudgetDto.getCategoryName();
+            int categoryBudget = resultFoundCategoryAndBudgetDto.getAmount();
+
+            LocalDate firstDayOfMonth = today.withDayOfMonth(1);
+            Long categoryTodayExpenseSum = expenseRepository.findCategoryTodayExpenseSum(categoryId,
+                    firstDayOfMonth.toString(), today.toString()).orElse(0L);
+
+            int categoryTodayExpense = expenseRepository.findCategoryTodayExpense(categoryId,
+                    today.toString()).orElse(0);
+
+            Long categoryTotalExpenseUpToYesterday = categoryTodayExpenseSum - categoryTodayExpense;
+
+            list.add(new CalcTodayCategoryExpenseVo(
+                    categoryName, categoryBudget,
+                    categoryTotalExpenseUpToYesterday, categoryTodayExpense));
+        }
+
+        Long todayTotalExpense = expenseRepository
+                .todayTotalExpense(user.getId(), today.toString()).orElse(0L);
+
+        webhookClient.sendTodayExpenseNoticeMessage(
+                this.webhookUrl, user.getUsername(), new TodayExpenseNoticeDto(todayTotalExpense, list));
     }
 }
