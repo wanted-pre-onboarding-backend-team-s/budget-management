@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorType {
 
     U001("U001", "존재하지 않는 계정입니다.",
-            UserNotFoundException.class, HttpStatus.NOT_FOUND),
+            UserNotFoundException.class, HttpStatus.BAD_REQUEST),
     U002("U002", "중복된 아이디 입니다.",
             DuplicateUserNameException.class, HttpStatus.BAD_REQUEST),
 
@@ -34,19 +34,19 @@ public enum ErrorType {
             JwtExpiredException.class, HttpStatus.BAD_REQUEST),
 
     C001("C001", "존재하지 않는 카테고리입니다.",
-            CategoryNotFoundException.class, HttpStatus.NOT_FOUND),
+            CategoryNotFoundException.class, HttpStatus.BAD_REQUEST),
     C002("C002", "해당 유저에게 존재하는 카테고리 아이디가 아닙니다.",
-            MismatchedCategoryIdAndUserIdException.class, HttpStatus.NOT_FOUND),
+            MismatchedCategoryIdAndUserIdException.class, HttpStatus.BAD_REQUEST),
 
     B001("B001", "이미 존재하는 카테고리의 예산입니다.",
             BudgetForCategoryAlreadyExistException.class, HttpStatus.BAD_REQUEST),
     B002("B002", "존재하지 않는 예산입니다."
-            , BudgetNotFoundException.class, HttpStatus.NOT_FOUND),
+            , BudgetNotFoundException.class, HttpStatus.BAD_REQUEST),
 
     EP001("EP001", "존재하지 않는 화폐유형입니다.",
-            ExpenseMethodNotFoundException.class, HttpStatus.NOT_FOUND),
+            ExpenseMethodNotFoundException.class, HttpStatus.BAD_REQUEST),
     EP002("EP002", "존재하지 않는 지출 내역입니다.",
-            NotExistExpenseInCategoryException.class, HttpStatus.NOT_FOUND);
+            NotExistExpenseInCategoryException.class, HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
