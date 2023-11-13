@@ -50,7 +50,7 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void excludeExpense(Long userId, Long expenseId) {
+    public void toggleExcludedStatus(Long userId, Long expenseId) {
         Expense expense = findExpense(expenseId);
         expense.verifyMatchUser(userId);
         expense.toggleExclude();

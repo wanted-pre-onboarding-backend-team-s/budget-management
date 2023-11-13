@@ -38,12 +38,9 @@ public class BudgetService {
         Budget budget = findBudget(budgetId);
         budget.verifyMatchUser(userId);
 
-        String category = request.getCategory();
-        if (!budget.verifyEqualCategory(category)) {
-            validateDuplicateCategory(userId, category);
-        }
-
+        validateCategory(userId, budget, request);
         budget.changeInfo(request);
+
         return BudgetResponse.from(budget);
     }
 
@@ -52,6 +49,13 @@ public class BudgetService {
         Budget budget = findBudget(budgetId);
         budget.verifyMatchUser(userId);
         budgetRepository.delete(budget);
+    }
+
+    private void validateCategory(Long userId, Budget budget, BudgetRequest request) {
+        String category = request.getCategory();
+        if (!budget.verifyEqualCategory(category)) {
+            validateDuplicateCategory(userId, category);
+        }
     }
 
     private void validateDuplicateCategory(Long userId, String category) {

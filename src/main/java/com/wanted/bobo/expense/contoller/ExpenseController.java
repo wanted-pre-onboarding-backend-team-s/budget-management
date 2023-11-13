@@ -63,7 +63,7 @@ public class ExpenseController {
     public ApiResponse<Void> excludeExpense(
             @RequestAttribute Long userId,
             @PathVariable("id") Long expenseId) {
-        expenseService.excludeExpense(userId, expenseId);
+        expenseService.toggleExcludedStatus(userId, expenseId);
         return ApiResponse.noContent();
     }
 

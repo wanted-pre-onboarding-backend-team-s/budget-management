@@ -103,7 +103,7 @@ class ExpenseServiceTest {
     @Test
     void exclude_expense_success() {
         when(expenseRepository.findById(any())).thenReturn(Optional.of(expense));
-        expenseService.excludeExpense(TEST_USER_ID, expense.getId());
+        expenseService.toggleExcludedStatus(TEST_USER_ID, expense.getId());
     }
 
     @DisplayName("지출 삭제 성공")
