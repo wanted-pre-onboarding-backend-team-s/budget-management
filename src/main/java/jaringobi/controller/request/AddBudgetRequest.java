@@ -1,6 +1,8 @@
 package jaringobi.controller.request;
 
 import jakarta.validation.Valid;
+import jaringobi.controller.request.validator.NotDuplicated;
+import jaringobi.controller.request.validator.YearMonthPattern;
 import jaringobi.domain.budget.Budget;
 import jaringobi.domain.budget.BudgetYearMonth;
 import jaringobi.domain.budget.CategoryBudget;
@@ -12,7 +14,10 @@ import lombok.Getter;
 @Getter
 public class AddBudgetRequest {
 
-    private List<BudgetByCategoryRequest> budgetByCategories;
+    @NotDuplicated
+    private List<@Valid BudgetByCategoryRequest> budgetByCategories;
+
+    @YearMonthPattern
     private String month;
 
     @Builder
