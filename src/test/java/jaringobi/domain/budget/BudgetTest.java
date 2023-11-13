@@ -1,12 +1,13 @@
 package jaringobi.domain.budget;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import jaringobi.domain.user.User;
 import jaringobi.exception.budget.InvalidBudgetException;
 import jaringobi.exception.budget.LowBudgetException;
-import java.lang.reflect.Field;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,5 +52,95 @@ class BudgetTest {
                 .categoryId(1L)
                 .build())
                 .isInstanceOf(LowBudgetException.class);
+    }
+
+    @Test
+    @DisplayName("Budget 객체 생성 성공")
+    void createBudgetWithValidData() {
+        // Given
+        BudgetYearMonth yearMonth = BudgetYearMonth.fromString("2023-10");
+        User user = User.builder()
+                .username("username")
+                .password("password")
+                .build();
+
+        List<CategoryBudget> categoryBudgets = List.of(
+                CategoryBudget.builder().amount(new Money(1000)).categoryId(1L).build(),
+                CategoryBudget.builder().amount(new Money(2000)).categoryId(2L).build()
+        );
+
+        // When
+        Budget budget = Budget.builder()
+                .yearMonth(yearMonth)
+                .user(user)
+                .categoryBudgets(categoryBudgets)
+                .build();
+
+        // Then
+        assertThat(budget.getId()).isNull();
+        assertThat(budget.getYearMonth()).isEqualTo(yearMonth);
+        assertThat(budget.getCategoryBudgets()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("Budget 만들 때 Null 인 YearMonth 가 오면 예외를 던진다.")
+    void createBudgetWithNullYearMonth() {
+        // When, Then
+        assertThrows(InvalidBudgetException.class, () ->
+                Budget.builder()
+                        .yearMonth(null)
+                        .user(User.builder()
+                                .username("username")
+                                .password("pssword")
+                                .build())
+                        .categoryBudgets(List.of())
+                        .build());
+    }
+
+    @Test
+    @DisplayName("이미 만들어진 예산에 새로운 유저로 설정 하면 예외를 던진다.")
+    void setUserTwice() {
+        // Given
+        User user = User.builder()
+                .password("password")
+                .username("username")
+                .build();
+
+        Budget budget = Budget.builder()
+                .yearMonth(BudgetYearMonth.fromString("2023-10"))
+                .user(user)
+                .categoryBudgets(List.of())
+                .build();
+
+        // When, Then
+        assertThatThrownBy(() -> budget.setUser(user))
+                .isInstanceOf(InvalidBudgetException.class);
+    }
+
+    @Test
+    @DisplayName("이미 있는 예산 카테고리에 카테고리를 다시 설정하려고 하면 예외를 던진다.")
+    void setCategoryBudgetsTwice() {
+        // Given
+        List<CategoryBudget> categoryBudgets = List.of(
+                CategoryBudget.builder().amount(new Money(1000)).categoryId(1L).build(),
+                CategoryBudget.builder().amount(new Money(2000)).categoryId(2L).build()
+        );
+
+        // When
+        Budget budget = Budget.builder()
+                .yearMonth(BudgetYearMonth.fromString("2023-10"))
+                .user(User.builder()
+                        .username("username")
+                        .password("password")
+                        .build())
+                .categoryBudgets(categoryBudgets)
+                .build();
+
+        // Then
+        assertThat(budget.getCategoryBudgets()).hasSize(2);
+
+        // When, Then
+        assertThatThrownBy(() -> budget.setCategoryBudgets(categoryBudgets))
+                .isInstanceOf(InvalidBudgetException.class);
     }
 }
