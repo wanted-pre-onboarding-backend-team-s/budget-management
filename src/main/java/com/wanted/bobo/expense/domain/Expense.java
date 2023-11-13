@@ -34,14 +34,16 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+
     @Builder
-    public Expense(Long userId, Category category, int amount, String memo, LocalDate date) {
+    public Expense(Long userId, Category category, int amount, String memo, LocalDate date, boolean isExclude) {
         this.userId = userId;
         this.amount = amount;
         this.category = category;
         this.memo = memo;
         this.date = date;
-        this.isExclude = false;
+        this.isExclude = isExclude;
     }
 
     public void verifyMatchUser(Long userId) {
@@ -54,7 +56,7 @@ public class Expense {
         this.amount = request.getAmount();
         this.category = Category.of(request.getCategory());
         this.memo = request.getMemo();
-        this.date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
     public void toggleExclude() {

@@ -39,6 +39,7 @@ public class ExpenseRequest {
                       .memo(memo)
                       .date(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                       .category(Category.of(category))
+                      .isExclude(false)
                       .build();
 
     }
