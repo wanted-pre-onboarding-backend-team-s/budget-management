@@ -6,6 +6,7 @@ import com.wanted.bobo.budget.exception.NotMatchBudgetUserException;
 import com.wanted.bobo.category.exception.NotAvailableCategoryException;
 import com.wanted.bobo.common.jwt.exception.ExpiredTokenException;
 import com.wanted.bobo.common.jwt.exception.MissingRequestHeaderAuthorizationException;
+import com.wanted.bobo.expense.exception.InvalidAmountRangeException;
 import com.wanted.bobo.expense.exception.NotFoundExpenseException;
 import com.wanted.bobo.expense.exception.NotMatchExpenseUserException;
 import com.wanted.bobo.user.exception.DuplicateUsernameException;
@@ -34,7 +35,8 @@ public enum ErrorType {
     B003("B003", "해당 예산 정보에 접근 권한이 없습니다.", NotMatchBudgetUserException.class, HttpStatus.FORBIDDEN),
 
     E001("E001", "존재하지 않는 지출 정보 입니다.", NotFoundExpenseException.class, HttpStatus.NOT_FOUND),
-    E002("E002", "해당 지출 정보에 접근 권한이 없습니다.", NotMatchExpenseUserException.class, HttpStatus.FORBIDDEN);
+    E002("E002", "해당 지출 정보에 접근 권한이 없습니다.", NotMatchExpenseUserException.class, HttpStatus.FORBIDDEN),
+    E003("E003", "최소금액이 최대금액보다 큽니다.", InvalidAmountRangeException.class, HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
