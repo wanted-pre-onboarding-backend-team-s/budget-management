@@ -2,13 +2,16 @@ package jaringobi.domain.budget;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 import jaringobi.exception.budget.InvalidBudgetException;
 import jaringobi.exception.budget.LowBudgetException;
+import java.lang.reflect.Field;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CategoryBudgetTest {
+class BudgetTest {
 
     @Test
     @DisplayName("Builder 로 CategoryBudget 객체 생성 성공")
@@ -17,7 +20,7 @@ class CategoryBudgetTest {
                 .amount(new Money(10000))
                 .categoryId(1L)
                 .build())
-        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -27,7 +30,7 @@ class CategoryBudgetTest {
                 .amount(null)
                 .categoryId(1L)
                 .build())
-        .isInstanceOf(InvalidBudgetException.class);
+                .isInstanceOf(InvalidBudgetException.class);
     }
 
     @Test
@@ -37,7 +40,7 @@ class CategoryBudgetTest {
                 .amount(new Money(100))
                 .categoryId(null)
                 .build())
-        .isInstanceOf(InvalidBudgetException.class);
+                .isInstanceOf(InvalidBudgetException.class);
     }
 
     @Test
@@ -47,7 +50,6 @@ class CategoryBudgetTest {
                 .amount(new Money(0))
                 .categoryId(1L)
                 .build())
-        .isInstanceOf(LowBudgetException.class);
+                .isInstanceOf(LowBudgetException.class);
     }
-
 }
