@@ -19,6 +19,7 @@ public enum ErrorType {
 
     U001("U001", "이미 존재하는 계정명입니다.", UsernameDuplicatedException.class, HttpStatus.CONFLICT),
     U002("U002", "존재하지 않는 계정입니다.", NotFoundUserException.class, HttpStatus.NOT_FOUND),
+    U003("U003", "비밀번호가 일치하지 않습니다.", PasswordNotMatchedException.class, HttpStatus.BAD_REQUEST),
 
     T001("T001", "유효하지 않은 토큰입니다.", InvalidTokenException.class, HttpStatus.BAD_REQUEST),
 
