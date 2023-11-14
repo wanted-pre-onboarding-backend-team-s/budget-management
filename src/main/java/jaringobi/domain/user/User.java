@@ -47,4 +47,12 @@ public class User extends BaseTimeEntity {
         Assert.hasText(password, "password must not be empty");
         password = passwordEncoder.encode(password);
     }
+
+    public boolean matchesPassword(PasswordEncoder passwordEncoder, String password) {
+        return passwordEncoder.matches(password, this.password);
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

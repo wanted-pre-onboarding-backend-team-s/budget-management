@@ -6,3 +6,11 @@ spring:
     compose:
       skip:
         in-tests: false
+  jpa:
+    show-sql: true
+
+
+jwt:
+  secret: default-secret-value
+  access_token: 600 # 10 분(600/60)
+  refresh_token: 86400 # 24 시간 (86400/60/60)
