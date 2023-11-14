@@ -64,7 +64,7 @@ class ExpenseServiceTest {
         ExpenseResponse response = expenseService.registerExpense(TEST_USER_ID, request);
 
         assertThat(response.getAmount()).isEqualTo(request.getAmount());
-        assertThat(response.getDate()).isEqualTo(request.getDate());
+        assertThat(response.getCategory()).isEqualTo(Category.of(request.getCategory()));
     }
 
     @DisplayName("지출 수정 성공")

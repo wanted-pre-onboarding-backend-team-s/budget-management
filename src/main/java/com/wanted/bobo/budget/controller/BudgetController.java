@@ -1,5 +1,6 @@
 package com.wanted.bobo.budget.controller;
 
+import com.wanted.bobo.budget.dto.BudgetFilter;
 import com.wanted.bobo.budget.dto.BudgetRecommendationResponse;
 import com.wanted.bobo.budget.dto.BudgetRequest;
 import com.wanted.bobo.budget.dto.BudgetResponse;
@@ -10,8 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,13 +32,13 @@ public class BudgetController {
     private final BudgetService budgetService;
     private final BudgetStatService budgetStatService;
 
-    @GetMapping("/rec/{total_amount}")
-    public ApiResponse<BudgetRecommendationResponse> recBudget(
-            @PathVariable("total_amount") int amount) {
-        return ApiResponse.ok(budgetStatService.recommendBudget(amount));
+    @GetMapping("/rec")
+    public ApiResponse<BudgetRecommendationResponse> recommendBudget(
+            @Valid @ParameterObject @ModelAttribute BudgetFilter filter) {
+        return ApiResponse.ok(budgetStatService.recommendBudget(filter));
     }
 
-    @GetMapping
+    @GetMapping()
     public ApiResponse<List<BudgetResponse>> getBudgets(
             @RequestAttribute Long userId) {
         return ApiResponse.ok(budgetService.getBudgets(userId));

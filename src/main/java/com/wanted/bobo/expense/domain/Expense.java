@@ -3,6 +3,7 @@ package com.wanted.bobo.expense.domain;
 import com.wanted.bobo.category.Category;
 import com.wanted.bobo.expense.dto.ExpenseRequest;
 import com.wanted.bobo.expense.exception.NotMatchExpenseUserException;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,12 +30,12 @@ public class Expense {
     private Long userId;
     private String memo;
     private boolean isExclude;
+
+    @Convert(converter = LocalDateAttributeConverter.class)
     private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private Category category;
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Builder
     public Expense(Long userId, Category category, int amount, String memo, LocalDate date, boolean isExclude) {
@@ -56,7 +57,7 @@ public class Expense {
         this.amount = request.getAmount();
         this.category = Category.of(request.getCategory());
         this.memo = request.getMemo();
-        this.date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern(DATE_FORMAT));
+        this.date = LocalDate.parse(request.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     public void toggleExclude() {

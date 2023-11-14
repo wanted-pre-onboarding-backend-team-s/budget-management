@@ -27,28 +27,36 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom {
 
     @Override
     public ExpenseListResponse findByCondition(Long userId, ExpenseFilter filter) {
-        int totalExpenses = getTotalExpenses(userId);
-        Map<Category, Integer> totalExpensesByCategory = getTotalExpensesByCategory(userId);
+        int totalExpenses = getTotalExpenses(userId, filter);
+        Map<Category, Integer> totalExpensesByCategory = getTotalExpensesByCategory(userId, filter);
         List<ExpenseResponse> filteredExpenses = getFilteredExpenses(userId, filter);
 
         return ExpenseListResponse.of(totalExpenses, totalExpensesByCategory, filteredExpenses);
     }
 
-    private Integer getTotalExpenses(Long userId) {
+    private Integer getTotalExpenses(Long userId, ExpenseFilter filter) {
         return Optional.ofNullable(
                                jpaQueryFactory
                                        .select(expense.amount.sum())
                                        .from(expense)
-                                       .where(userEq(userId).and(isExcludeEq()))
+                                       .where(userEq(userId),
+                                              isExcludeEq(),
+                                              dateBetween(filter.getStart(), filter.getEnd()),
+                                              categoryEq(filter.getCategory()),
+                                              amountBetween(filter.getMin(), filter.getMax()))
                                        .fetchOne())
                        .orElse(0);
     }
 
-    private Map<Category, Integer> getTotalExpensesByCategory(Long userId) {
+    private Map<Category, Integer> getTotalExpensesByCategory(Long userId, ExpenseFilter filter) {
         List<Tuple> result = jpaQueryFactory
                 .select(expense.category, expense.amount.sum().as("total"))
                 .from(expense)
-                .where(userEq(userId).and(isExcludeEq()))
+                .where(userEq(userId),
+                       isExcludeEq(),
+                       dateBetween(filter.getStart(), filter.getEnd()),
+                       categoryEq(filter.getCategory()),
+                       amountBetween(filter.getMin(), filter.getMax()))
                 .groupBy(expense.category)
                 .fetch();
 

@@ -1,6 +1,7 @@
 package com.wanted.bobo.budget.service;
 
 import com.wanted.bobo.budget.domain.BudgetRepository;
+import com.wanted.bobo.budget.dto.BudgetFilter;
 import com.wanted.bobo.budget.dto.BudgetRecommendationResponse;
 import com.wanted.bobo.budget.dto.BudgetStatByCategory;
 import com.wanted.bobo.category.Category;
@@ -24,10 +25,12 @@ public class BudgetStatService {
     private static final int ROUNDING_DIGITS = 2;
 
     @Transactional(readOnly = true)
-    public BudgetRecommendationResponse recommendBudget(int amount) {
+    public BudgetRecommendationResponse recommendBudget(BudgetFilter filter) {
         initializeRecommendations();
 
-        List<BudgetStatByCategory> stats = budgetRepository.findAverageBudgetPercentagesByCategory();
+        Integer amount = filter.getAmount();
+        List<BudgetStatByCategory> stats =
+                budgetRepository.findAverageBudgetPercentagesByCategory(filter.getYearmonth());
 
         for (BudgetStatByCategory stat : stats) {
             updateCategoryBudgetRecommendation(stat.getPercentage(), stat.getCategory(), amount);

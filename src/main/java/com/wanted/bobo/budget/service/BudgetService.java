@@ -7,8 +7,9 @@ import com.wanted.bobo.budget.dto.BudgetResponse;
 import com.wanted.bobo.budget.exception.DuplicateBudgetCategoryException;
 import com.wanted.bobo.budget.exception.NotFoundBudgetException;
 import com.wanted.bobo.category.Category;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,11 @@ public class BudgetService {
 
     @Transactional
     public BudgetResponse setBudget(Long userId, BudgetRequest request) {
-        validateDuplicateCategory(userId, request.getCategory());
+        validateDuplicateCategory(
+                userId,
+                request.getCategory(),
+                YearMonth.parse(request.getYearmonth(), DateTimeFormatter.ofPattern("yyyy-MM")));
+
         return BudgetResponse.from(budgetRepository.save(request.toEntity(userId)));
     }
 
@@ -53,13 +58,17 @@ public class BudgetService {
 
     private void validateCategory(Long userId, Budget budget, BudgetRequest request) {
         String category = request.getCategory();
-        if (!budget.verifyEqualCategory(category)) {
-            validateDuplicateCategory(userId, category);
+        if (!budget.verifyEqualCategory(Category.of(category))) {
+            validateDuplicateCategory(
+                    userId,
+                    category,
+                    YearMonth.parse(request.getYearmonth(), DateTimeFormatter.ofPattern("yyyy-MM")));
         }
     }
 
-    private void validateDuplicateCategory(Long userId, String category) {
-        if (budgetRepository.existsByUserIdAndCategory(userId, Category.of(category))) {
+    private void validateDuplicateCategory(Long userId, String category, YearMonth yearmonth) {
+        if (budgetRepository.existsByUserIdAndCategoryAndYearmonth(
+                userId, Category.of(category), yearmonth)) {
             throw new DuplicateBudgetCategoryException();
         }
     }

@@ -24,10 +24,10 @@ public class ExpenseFilter {
 
     private String category;
 
-    @Positive(message = "최소값은 양수이어야 합니다.")
+    @Positive(message = "최소금액은 양수이어야 합니다.")
     private Integer min;
 
-    @Positive(message = "최대값은 양수이어야 합니다.")
+    @Positive(message = "최대금액은 양수이어야 합니다.")
     private Integer max;
 
     public boolean isMinMaxValid() {
