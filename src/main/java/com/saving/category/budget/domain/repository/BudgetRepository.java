@@ -22,4 +22,20 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
             + " and b.budgetYearMonth = :thisYearMonth")
     List<ResultFoundCategoryAndBudgetDto> findByCategoryAndBudget(
             @Param("userId") Long userId, @Param("thisYearMonth") String thisYearMonth);
+
+    @Query(value = "select sum(b.amount)"
+            + " from Budget b join Category c"
+            + " on b.categoryId = c.id"
+            + " where c.userId != :userId"
+            + " and b.budgetYearMonth = :budgetYearMonth")
+    Optional<Long> findSumAmountByNotUserId(
+            @Param("userId") Long userId, @Param("budgetYearMonth")String budgetYearMonth);
+
+    @Query(value = "select sum(b.amount)"
+            + " from Budget b join Category c"
+            + " on b.categoryId = c.id"
+            + " where c.userId = :userId"
+            + " and b.budgetYearMonth = :budgetYearMonth")
+    Optional<Long> findSumAmountByUserId(
+            @Param("userId") Long userId, @Param("budgetYearMonth")String budgetYearMonth);
 }

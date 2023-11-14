@@ -14,7 +14,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, Expense
             + " from Expense e"
             + " where e.categoryId = :categoryId"
             + " and e.expenseAt between :startDate and :endDate")
-    Optional<Long> findCategoryTodayExpenseSum(@Param("categoryId") Long categoryId,
+    Optional<Long> findSumOfExpenseByCategoryIdAndTime(@Param("categoryId") Long categoryId,
             @Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = "select coalesce(e.amount, 0)"
@@ -32,4 +32,31 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, Expense
     Optional<Long> todayTotalExpense(
             @Param("userId") Long userId,
             @Param("expenseAt") String expenseAt);
+
+    @Query(value = "select sum(e.amount)"
+            + " from Expense e join Category c"
+            + " on e.categoryId = c.id"
+            + " where c.userId = :userId"
+            + " and e.expenseAt between :startDate and :endDate")
+    Optional<Long> findSumOfExpenseByUserIdAndTime(@Param("userId") Long userId,
+            @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query(value = "select sum(e.amount)"
+            + " from Expense e join Category c"
+            + " on e.categoryId = c.id"
+            + " where c.userId != :userId"
+            + " and e.expenseAt between :startDate and :endDate")
+    Optional<Long> findSumAmountByNotUserIdAndTime(
+            @Param("userId") Long userId,
+            @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query(value = "select sum(e.amount)"
+            + " from Expense e join Category c"
+            + " on e.categoryId = c.id"
+            + " where c.userId = :userId"
+            + " and e.expenseAt between :startDate and :endDate")
+    Optional<Long> findSumAmountByUserIdAndTime(
+    @Param("userId") Long userId,
+    @Param("startDate") String startDate, @Param("endDate") String endDate);
+
 }
