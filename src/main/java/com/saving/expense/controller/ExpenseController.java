@@ -4,6 +4,7 @@ import com.saving.common.response.ApiResponse;
 import com.saving.expense.dto.ExpenseListResponseDto;
 import com.saving.expense.dto.ExpenseRequestDto;
 import com.saving.expense.dto.ExpenseResponseDto;
+import com.saving.expense.dto.ExpenseStatsResponseDto;
 import com.saving.expense.service.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -77,5 +78,10 @@ public class ExpenseController {
 
         expenseService.deleteExpense(userId, expenseId);
         return ApiResponse.noContent();
+    }
+
+    @GetMapping("/stats")
+    public ApiResponse<ExpenseStatsResponseDto> expenseStats(@RequestAttribute Long userId) {
+        return ApiResponse.ok(expenseService.expenseStats(userId));
     }
 }
