@@ -38,7 +38,7 @@ public class TokenProvider {
         this.AL = Algorithm.HMAC512(jwtProperties.getSecret());
     }
 
-    public String generate(Long userSeq, TokenType tokenType) {
+    private String generate(Long userSeq, TokenType tokenType) {
         long now = Instant.now().getEpochSecond();
         return JWT.create().withClaim(USER_SEQ, userSeq)
                 .withClaim(TOKEN_TYPE, tokenType.name())
