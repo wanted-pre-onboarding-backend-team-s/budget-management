@@ -21,7 +21,8 @@ public class TokenProvider {
     private static final String TOKEN_TYPE = "token_type";
     private static final String EXP = "exp";
     private static final String IAT = "iat";
-    public static final String AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer";
 
     public enum TokenType {
         ACCESS,
@@ -39,7 +40,7 @@ public class TokenProvider {
 
     public String parseTokenFromHeader(HttpServletRequest httpServletRequest) {
         String authorization = httpServletRequest.getHeader(AUTHORIZATION);
-        if (Objects.isNull(authorization) || !authorization.startsWith("Bearer")) {
+        if (Objects.isNull(authorization) || !authorization.startsWith(BEARER)) {
             throw new AuthenticationException();
         }
         return authorization.substring(7);
@@ -72,7 +73,7 @@ public class TokenProvider {
 
     public boolean isExpired(String token) {
         Date expiresAt = JWT.decode(token)
-                .getClaim("exp").asDate();
+                .getClaim(EXP).asDate();
         return expiresAt.before(new Date());
     }
 
