@@ -7,6 +7,7 @@ import io.restassured.path.json.JsonPath;
 import jaringobi.acceptance.ApiTest;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
+import jaringobi.jwt.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ public class BudgetApiTest extends ApiTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     @Nested
     @DisplayName("[예산 설정] /api/v1/budget ")
     class BudgetCreate {
@@ -27,23 +31,25 @@ public class BudgetApiTest extends ApiTest {
         void successCreateBudget() {
             // Given
             saveUser();
+            String accessToken = tokenProvider.issueAccessToken(1L);
+
             String body = """
-                {
-                    "budgetByCategories" : [
-                        {
-                            "categoryId": 1,
-                            "money": 1
-                        },
-                        {
-                            "categoryId": 2,
-                            "money": 9000
-                        }
-                    ],
-                    "month": "2023-10"
-                }
-                """;
+                    {
+                        "budgetByCategories" : [
+                            {
+                                "categoryId": 1,
+                                "money": 1
+                            },
+                            {
+                                "categoryId": 2,
+                                "money": 9000
+                            }
+                        ],
+                        "month": "2023-10"
+                    }
+                    """;
             // When
-            var response = BudgetApi.예산설정(body);
+            var response = BudgetApi.예산설정(body, accessToken);
 
             // Then
             assertThat(response.response().statusCode()).isEqualTo(201);
@@ -55,25 +61,26 @@ public class BudgetApiTest extends ApiTest {
         void failDuplicatedCategory() {
             // Given
             saveUser();
-            String body = """
-                {
-                    "budgetByCategories" : [
-                        {
-                            "categoryId": 1,
-                            "money": 1
-                        },
-                        {
-                            "categoryId": 1,
-                            "money": 9000
-                        }
-                    ],
-                    "month": "2023-10"
-                }
-                """;
-            // When
-            var response = BudgetApi.예산설정(body);
-            JsonPath jsonPath = response.jsonPath();
+            String accessToken = tokenProvider.issueAccessToken(1L);
 
+            String body = """
+                    {
+                        "budgetByCategories" : [
+                            {
+                                "categoryId": 1,
+                                "money": 1
+                            },
+                            {
+                                "categoryId": 1,
+                                "money": 9000
+                            }
+                        ],
+                        "month": "2023-10"
+                    }
+                    """;
+            // When
+            var response = BudgetApi.예산설정(body, accessToken);
+            JsonPath jsonPath = response.jsonPath();
 
             // Then
             assertThat(response.response().statusCode()).isEqualTo(400);
@@ -87,13 +94,15 @@ public class BudgetApiTest extends ApiTest {
         void failCategoryIsNull() {
             // Given
             saveUser();
+            String accessToken = tokenProvider.issueAccessToken(1L);
+
             String body = """
-                {
-                    "month": "2023-10"
-                }
-                """;
+                    {
+                        "month": "2023-10"
+                    }
+                    """;
             // When
-            var response = BudgetApi.예산설정(body);
+            var response = BudgetApi.예산설정(body, accessToken);
             JsonPath jsonPath = response.jsonPath();
 
             // Then
@@ -108,23 +117,24 @@ public class BudgetApiTest extends ApiTest {
         void failInvalidDateFormat() {
             // Given
             saveUser();
+            String accessToken = tokenProvider.issueAccessToken(1L);
             String body = """
-                {
-                    "budgetByCategories" : [
-                        {
-                            "categoryId": 1,
-                            "money": 1
-                        },
-                        {
-                            "categoryId": 2,
-                            "money": 9000
-                        }
-                    ],
-                    "month": "2023"
-                }
-                """;
+                    {
+                        "budgetByCategories" : [
+                            {
+                                "categoryId": 1,
+                                "money": 1
+                            },
+                            {
+                                "categoryId": 2,
+                                "money": 9000
+                            }
+                        ],
+                        "month": "2023"
+                    }
+                    """;
             // When
-            var response = BudgetApi.예산설정(body);
+            var response = BudgetApi.예산설정(body, accessToken);
             JsonPath jsonPath = response.jsonPath();
 
             // Then
@@ -139,8 +149,8 @@ public class BudgetApiTest extends ApiTest {
 
     private void saveUser() {
         userRepository.save(User.builder()
-                .username("username123")
-                .password("password123!")
+                .username("testuser123")
+                .password("testuser123!")
                 .build());
     }
 }

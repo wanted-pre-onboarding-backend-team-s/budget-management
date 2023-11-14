@@ -1,6 +1,7 @@
 package jaringobi.controller;
 
 import jakarta.validation.Valid;
+import jaringobi.auth.AuthenticationPrincipal;
 import jaringobi.common.response.ApiResponse;
 import jaringobi.controller.request.AddBudgetRequest;
 import jaringobi.controller.response.AddBudgetResponse;
@@ -25,8 +26,9 @@ public class BudgetController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<Void> addBudget(@Valid @RequestBody AddBudgetRequest addBudgetRequest) {
-        AppUser appUser = new AppUser(1L);
+    public ResponseEntity<Void> addBudget(
+            @AuthenticationPrincipal AppUser appUser,
+            @Valid @RequestBody AddBudgetRequest addBudgetRequest) {
         AddBudgetResponse addBudgetResponse = budgetService.addBudget(appUser, addBudgetRequest);
         return ResponseEntity.created(URI.create("/api/v1/budget/" + addBudgetResponse.getBudgetNo())).build();
     }

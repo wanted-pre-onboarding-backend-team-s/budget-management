@@ -23,7 +23,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 @MockitoSettings
@@ -63,7 +62,7 @@ public class BudgetServiceTest {
                 .build();
 
         // Given
-        when(userRepository.findById(appUser.getUserId())).thenReturn(Optional.of(user));
+        when(userRepository.findById(appUser.userId())).thenReturn(Optional.of(user));
         when(budgetRepository.save(any())).thenReturn(savedBudget);
 
         // When
@@ -90,7 +89,7 @@ public class BudgetServiceTest {
                 .build();
 
         // Given
-        when(userRepository.findById(appUser.getUserId())).thenReturn(Optional.empty());
+        when(userRepository.findById(appUser.userId())).thenReturn(Optional.empty());
 
         // When
         assertThatThrownBy(() -> budgetService.addBudget(appUser, addBudgetRequest))

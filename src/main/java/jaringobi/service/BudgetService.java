@@ -1,6 +1,5 @@
 package jaringobi.service;
 
-import jaringobi.common.response.ApiResponse;
 import jaringobi.controller.request.AddBudgetRequest;
 import jaringobi.controller.response.AddBudgetResponse;
 import jaringobi.domain.budget.Budget;
@@ -35,7 +34,7 @@ public class BudgetService {
 
 
     private User findUser(AppUser appUser) {
-        return userRepository.findById(appUser.getUserId())
+        return userRepository.findById(appUser.userId())
                 .orElseThrow(NotFoundUserException::new);
     }
 }
