@@ -8,8 +8,8 @@ import jaringobi.acceptance.ApiTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("[회원가입] /api/v1/signup ")
-public class UserApiTest extends ApiTest {
+@DisplayName("[회원가입] API 테스트 : /api/v1/signup ")
+public class UserSignUpApiTest extends ApiTest {
 
 
     @Test
