@@ -1,11 +1,7 @@
 package jaringobi.domain.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class AppUser {
+public record AppUser(long userId) {
 
-    private long userId;
 }
