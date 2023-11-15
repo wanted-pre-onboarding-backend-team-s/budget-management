@@ -120,9 +120,9 @@ saving
 <br>
 
 ### 📌사용자
-- JWT 구현을 위해 `JWT util class`를 생성하였습니다.
+- JWT 구현을 위해 [JWT util class](https://github.com/newnyee/saving/blob/main/src/main/java/com/saving/common/util/JwtUtil.java)를 생성하였습니다.
   - JWT util class는 `JWT의 생성과 인증`에 관련된 메소드들이 존재하는 클래스입니다.
-- `Interceptor`를 이용하여 JWT의 인증을 구현하였습니다.
+- [Interceptor](https://github.com/newnyee/saving/blob/main/src/main/java/com/saving/common/interceptor/AuthenticationInterceptor.java)를 이용하여 JWT의 인증을 구현하였습니다.
   - Interceptor를 사용한 이유?
   - 예전 프로젝트때에는 Filter를 이용했었습니다. Filter를 이용하게되면 필터 되는 시점이 스프링 컨테이너에 도달하기 전이기 때문에 예외처리에 대한 부분을 따로 구현해야한다는 불편함이 있습니다.
   이번 프로젝트 일정이 타이트 하므로 시간들을 줄이기 위해 Interceptor를 이용하였습니다.
@@ -147,6 +147,6 @@ saving
     <img src="https://github.com/newnyee/saving/assets/121937711/27f83d69-9abc-4de3-b677-c6d4800f920d" width="400"/>
 <br>
 
-- `Scheduler`를 이용하여 매일 지정한 시간마다 `Discord webhook`을 통해 알림이 갈 수 있도록 구현하였습니다.
+- [Scheduler](https://github.com/newnyee/saving/blob/main/src/main/java/com/saving/expense/service/ExpenseService.java)를 이용하여 매일 지정한 시간마다 [Discord webhook](https://github.com/newnyee/saving/tree/main/src/main/java/com/saving/webhook)을 통해 알림이 갈 수 있도록 구현하였습니다.
 
     <img src="https://github.com/newnyee/saving/assets/121937711/1a2a8167-e97b-41fd-b339-fff306dcdb96" width="500"/>
