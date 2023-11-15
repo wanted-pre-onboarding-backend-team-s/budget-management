@@ -1,5 +1,6 @@
 package com.saving.expense.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,8 +8,13 @@ import lombok.Getter;
 @Getter
 public class ExpenseListResponseDto {
 
+    @Schema(title = "total expense", description = "총 지출액")
     private Long totalExpense;
+
+    @Schema(title = "expense list", description = "지출 목록")
     private List<SimpleExpenseDto> expenseList;
+
+    @Schema(title = "total expense by category", description = "카테고리별 총 지출액")
     private List<TotalExpenseByCategory> totalExpenseByCategoryList;
 
     @Builder

@@ -186,7 +186,7 @@ public class ExpenseService {
             CategoryConsumeRate categoryConsumeRate = CategoryConsumeRate.builder()
                     .categoryId(categoryId)
                     .categoryName(category.getCategoryName())
-                    .consumeRate(
+                    .expenseRate(
                             getExpenseReteByCategoryAndTime(categoryId, thisMonthAtDayOne, today,
                             lastMonthAtDayOne, endOfLastMonth))
                     .build();

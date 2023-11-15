@@ -15,8 +15,8 @@ public class Swagger2Config {
     public OpenAPI openAPI() {
         Info info = new Info()
                 .version("v1.0.0")
-                .title("BabDoduk API")
-                .description("밥도둑 API 명세서 입니다.");
+                .title("Saving API")
+                .description("Saving API 명세서 입니다.");
 
         String jwt = "JWT";
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);

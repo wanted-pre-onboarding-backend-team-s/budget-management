@@ -150,3 +150,10 @@ saving
 - `Scheduler`를 이용하여 매일 지정한 시간마다 `Discord webhook`을 통해 알림이 갈 수 있도록 구현하였습니다.
 
     <img src="https://github.com/newnyee/saving/assets/121937711/1a2a8167-e97b-41fd-b339-fff306dcdb96" width="500"/>
+
+<br>
+
+### 📌API 명세서
+- 이번 프로젝트는 특히나 자주 사용되지 않는 영어 용어들이 많기때문에 API 사용시 혼동이 올 수 있을것을 생각하여 swagger를 이용하여 더욱 더 꼼꼼하게 명세서를 만들었습니다.
+
+  <img src="https://github.com/newnyee/saving/assets/121937711/5c50ac7c-7e52-44ee-8f53-1a07eb4407df" width="600"/>

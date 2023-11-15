@@ -1,6 +1,7 @@
 package com.saving.category.budget.dto;
 
 import com.saving.category.budget.domain.entity.Budget;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,10 +14,12 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor
 public class BudgetRequestDto {
 
+    @Schema(title = "budget amount", description = "예산액")
     @NotNull(message = "필수 입력값 입니다.")
     @Range(min = 1, message = "1 이상의 값을 입력해주세요")
     private int amount;
 
+    @Schema(title = "budget year,month", description = "예산 년,월")
     @NotBlank(message = "필수 입력값 입니다.")
     @Pattern(
             message = "YYYY-MM 형식으로 입력해주세요.",

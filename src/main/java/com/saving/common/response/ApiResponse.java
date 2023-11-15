@@ -1,12 +1,16 @@
 package com.saving.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 public class ApiResponse<T> {
 
+    @Schema(title = "http status", description = "http 상태코드")
     private int status;
+
+    @Schema(title = "data", description = "응답 데이터")
     private T data;
 
     public ApiResponse() {
