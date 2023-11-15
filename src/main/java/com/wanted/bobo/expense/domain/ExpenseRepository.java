@@ -10,11 +10,11 @@ public interface ExpenseRepository extends
 
     @Query(value =
             "SELECT * FROM expenses " +
-                    "WHERE user_id = :userId AND date >= :startOfMonth AND date < :endDate", nativeQuery = true)
+                    "WHERE user_id = :userId AND date >= :startOfMonth AND date < :endDate AND is_exclude = 0", nativeQuery = true)
     List<Expense> findByUserIdAndDateRange(Long userId, String startOfMonth, String endDate);
     @Query(value =
             "SELECT * FROM expenses " +
-                    "WHERE user_id = :userId AND date = :date", nativeQuery = true)
+                    "WHERE user_id = :userId AND date = :date AND is_exclude = 0", nativeQuery = true)
     List<Expense> findByUserIdAndDate(Long userId, String date);
 
 }
