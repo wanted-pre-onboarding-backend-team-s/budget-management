@@ -39,12 +39,14 @@
 <img src="https://img.shields.io/badge/Spring Data JPA-gray?style=for-the-badge&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/QueryDSL-0078D4?style=for-the-badge&logo=Spring Data JPA&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/MySQL 8-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/></a>
-<img src="https://img.shields.io/badge/Gradle-4429A1?style=for-the-badge&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/Junit-25A162?style=for-the-badge&logo=JUnit5&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/Notion-FFFFFF?style=for-the-badge&logo=Notion&logoColor=black"/></a>
 <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira%20software&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white"/></a>
 
 <br>
 <br>
@@ -154,6 +156,6 @@ saving
 <br>
 
 ### 📌API 명세서
-- 이번 프로젝트는 특히나 자주 사용되지 않는 영어 용어들이 많기때문에 API 사용시 혼동이 올 수 있을것을 생각하여 swagger를 이용하여 더욱 더 꼼꼼하게 명세서를 만들었습니다.
+- 이번 프로젝트는 특히나 자주 사용되지 않는 영어 용어들이 많기때문에 API 사용시 단어에 대한 혼동이 올 수 있을것을 생각하여 [swagger를 이용](https://github.com/newnyee/saving/commit/f37e2c100c134645091b9b4121670e5dce94ddc7)하여 더욱 더 꼼꼼하게 명세서를 만들었습니다.
 
   <img src="https://github.com/newnyee/saving/assets/121937711/5c50ac7c-7e52-44ee-8f53-1a07eb4407df" width="600"/>
