@@ -7,6 +7,8 @@ import com.wanted.bobo.expense.domain.Expense;
 import com.wanted.bobo.expense.domain.ExpenseRepository;
 import com.wanted.bobo.expense.dto.TodayExpenseRecMessage;
 import com.wanted.bobo.expense.dto.TodayExpenseReportMessage;
+import com.wanted.bobo.user.domain.User;
+import com.wanted.bobo.user.domain.UserRepository;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -24,25 +26,29 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class ExpenseConsultantService {
 
-    @Value("${discord.webhook.url}")
-    private String discordWebhookUrl;
-
     private final BudgetRepository budgetRepository;
     private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 37 1 * * *")
     public void sendTodayExpenseRecommendation() {
-        TodayExpenseRecMessage expenseRecMessage = generateExpenseRecommendations();
-        sendWebhookMessage(expenseRecMessage.toWebhookMessage());
+        List<User> users = userRepository.findByUrlNotNull();
+        for (User user : users) {
+            TodayExpenseRecMessage expenseRecMessage = generateExpenseRecommendations(user.getId());
+            sendWebhookMessage(expenseRecMessage.toWebhookMessage(), user.getUrl());
+        }
     }
 
-    @Scheduled(cron = "0 0 20 * * *")
+    @Scheduled(cron = "0 37 1 * * *")
     public void sendTodayExpenseReport() {
-        TodayExpenseReportMessage expenseRecMessage = generateExpenseReport();
-        sendWebhookMessage(expenseRecMessage.toWebhookMessage());
+        List<User> users = userRepository.findByUrlNotNull();
+        for (User user : users) {
+            TodayExpenseReportMessage expenseRecMessage = generateExpenseReport(user.getId());
+            sendWebhookMessage(expenseRecMessage.toWebhookMessage(), user.getUrl());
+        }
     }
 
-    private void sendWebhookMessage(Object message) {
+    private void sendWebhookMessage(Object message, String discordWebhookUrl) {
         WebClient webClient = WebClient.create();
         webClient.post()
                  .uri(discordWebhookUrl)
@@ -51,15 +57,16 @@ public class ExpenseConsultantService {
                  .retrieve()
                  .bodyToMono(String.class)
                  .subscribe();
+
     }
 
-    private TodayExpenseRecMessage generateExpenseRecommendations() {
+    private TodayExpenseRecMessage generateExpenseRecommendations(Long userId) {
         LocalDate today = LocalDate.now();
         String startOfMonth = today.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String endDate = today.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(1L, startOfMonth, endDate);
-        List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(1L, YearMonth.now());
+        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(userId, startOfMonth, endDate);
+        List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(userId, YearMonth.now());
 
         int totalBudget = budgets.stream().mapToInt(Budget::getAmount).sum();
         int totalExpense = expenses.stream().mapToInt(Expense::getAmount).sum();
@@ -70,16 +77,16 @@ public class ExpenseConsultantService {
                                           calculateTodayRecommendedBudgets(expenses, budgets));
     }
 
-    private TodayExpenseReportMessage generateExpenseReport() {
+    private TodayExpenseReportMessage generateExpenseReport(Long userId) {
         LocalDate today = LocalDate.now();
         String startOfMonth = today.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String endDate = today.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(1L, startOfMonth, endDate);
-        List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(1L, YearMonth.now());
+        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(userId, startOfMonth, endDate);
+        List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(userId, YearMonth.now());
 
         List<Expense> todayExpenses = expenseRepository.findByUserIdAndDate(
-                1L,
+                userId,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         Map<Category, Integer> todayCategoryExpenses =

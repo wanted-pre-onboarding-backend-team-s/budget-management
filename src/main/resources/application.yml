@@ -8,7 +8,3 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
-
-discord:
-  webhook:
-    url: https://discord.com/api/webhooks/1173826887005503558/vIjQx9EpgF8ycr7actwX8s5sjrtHx3xsxwWhvNc-KPPfshzshSVsx7OEbEcykDdtBDzx
