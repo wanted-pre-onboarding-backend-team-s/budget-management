@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum Category {
     ETC("etc", "기타"),
-    FOOD("food", "식비"),
+    FOOD("food", "식ㅤ비"),
     TRAFFIC("traffic", "교통비"),
     COMMUNICATION("communication", "통신비"),
     LIVING("living", "생활비"),

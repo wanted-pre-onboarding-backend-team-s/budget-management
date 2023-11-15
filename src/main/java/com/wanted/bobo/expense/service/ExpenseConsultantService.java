@@ -33,11 +33,20 @@ public class ExpenseConsultantService {
     @Scheduled(cron = "0 0 8 * * *")
     public void sendTodayExpenseRecommendation() {
         TodayExpenseRecMessage expenseRecMessage = generateExpenseRecommendations();
+        sendWebhookMessage(expenseRecMessage.toWebhookMessage());
+    }
 
+    @Scheduled(cron = "0 0 20 * * *")
+    public void sendTodayExpenseReport() {
+        TodayExpenseReportMessage expenseRecMessage = generateExpenseReport();
+        sendWebhookMessage(expenseRecMessage.toWebhookMessage());
+    }
+
+    private void sendWebhookMessage(Object message) {
         WebClient webClient = WebClient.create();
         webClient.post()
                  .uri(discordWebhookUrl)
-                 .body(BodyInserters.fromValue(expenseRecMessage.toWebhookMessage()))
+                 .body(BodyInserters.fromValue(message))
                  .header("Content-Type", "application/json")
                  .retrieve()
                  .bodyToMono(String.class)
@@ -45,15 +54,48 @@ public class ExpenseConsultantService {
     }
 
     private TodayExpenseRecMessage generateExpenseRecommendations() {
+        LocalDate today = LocalDate.now();
+        String startOfMonth = today.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String endDate = today.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(1L, startOfMonth, endDate);
         List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(1L, YearMonth.now());
-        List<Expense> expenses = expenseRepository.findByUserIdAndYearmonth(
-                1L,
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")));
 
         int totalBudget = budgets.stream().mapToInt(Budget::getAmount).sum();
-        int remainingBudget = totalBudget;
+        int totalExpense = expenses.stream().mapToInt(Expense::getAmount).sum();
+        int remainingBudget = totalBudget - totalExpense;
 
-        Map<Category, Integer> dailyRecommendedCategoryBudgets
+        return new TodayExpenseRecMessage(totalBudget,
+                                          remainingBudget,
+                                          calculateTodayRecommendedBudgets(expenses, budgets));
+    }
+
+    private TodayExpenseReportMessage generateExpenseReport() {
+        LocalDate today = LocalDate.now();
+        String startOfMonth = today.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String endDate = today.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        List<Expense> expenses = expenseRepository.findByUserIdAndDateRange(1L, startOfMonth, endDate);
+        List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(1L, YearMonth.now());
+
+        List<Expense> todayExpenses = expenseRepository.findByUserIdAndDate(
+                1L,
+                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+        Map<Category, Integer> todayCategoryExpenses =
+                todayExpenses.stream()
+                             .collect(Collectors.groupingBy(
+                                     Expense::getCategory, Collectors.summingInt(Expense::getAmount)));
+
+        int totalTodayExpenses = todayExpenses.stream().mapToInt(Expense::getAmount).sum();
+
+        return new TodayExpenseReportMessage(totalTodayExpenses,
+                                             todayCategoryExpenses,
+                                             calculateTodayRecommendedBudgets(expenses, budgets));
+    }
+
+    private Map<Category, Integer> calculateTodayRecommendedBudgets(List<Expense> expenses, List<Budget> budgets) {
+        Map<Category, Integer> todayRecommendedCategoryBudgets
                 = budgets.stream()
                          .collect(Collectors.groupingBy(
                                  Budget::getCategory,
@@ -61,40 +103,22 @@ public class ExpenseConsultantService {
 
         for (Expense expense : expenses) {
             int amount = expense.getAmount();
-            remainingBudget -= amount;
 
-            if (dailyRecommendedCategoryBudgets.containsKey(expense.getCategory())) {
-                dailyRecommendedCategoryBudgets.replace(
+            if (todayRecommendedCategoryBudgets.containsKey(expense.getCategory())) {
+                todayRecommendedCategoryBudgets.replace(
                         expense.getCategory(),
-                        dailyRecommendedCategoryBudgets.get(expense.getCategory()) - amount
+                        todayRecommendedCategoryBudgets.get(expense.getCategory()) - amount
                 );
             }
         }
 
         int daysRemainingInMonth = YearMonth.now().lengthOfMonth() - LocalDate.now().getDayOfMonth() + 1;
 
-        dailyRecommendedCategoryBudgets = dailyRecommendedCategoryBudgets.entrySet().stream()
-                                                           .collect(Collectors.toMap(
-                                                                   Map.Entry::getKey,
-                                                                   entry -> entry.getValue() / daysRemainingInMonth
-                                                           ));
-
-        return new TodayExpenseRecMessage(totalBudget, remainingBudget, dailyRecommendedCategoryBudgets);
-    }
-
-    @Scheduled(cron = "0 0 20 * * *")
-    public void sendTodayExpenseReport() {
-        TodayExpenseReportMessage expenseRecMessage = new TodayExpenseReportMessage();
-
-        WebClient webClient = WebClient.create();
-        webClient.post()
-                 .uri(discordWebhookUrl)
-                 .body(BodyInserters.fromValue(expenseRecMessage.toWebhookMessage()))
-                 .header("Content-Type", "application/json")
-                 .retrieve()
-                 .bodyToMono(String.class)
-                 .subscribe();
+        return todayRecommendedCategoryBudgets.entrySet()
+                                              .stream()
+                                              .collect(Collectors.toMap(
+                                                      Map.Entry::getKey,
+                                                      entry -> entry.getValue() / daysRemainingInMonth));
     }
 
 }
-
