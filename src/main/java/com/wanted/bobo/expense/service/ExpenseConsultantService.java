@@ -30,7 +30,7 @@ public class ExpenseConsultantService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
 
-    @Scheduled(cron = "0 37 1 * * *")
+    @Scheduled(cron = "0 0 8 * * *")
     public void sendTodayExpenseRecommendation() {
         List<User> users = userRepository.findByUrlNotNull();
         for (User user : users) {
@@ -39,7 +39,7 @@ public class ExpenseConsultantService {
         }
     }
 
-    @Scheduled(cron = "0 37 1 * * *")
+    @Scheduled(cron = "0 0 20 * * *")
     public void sendTodayExpenseReport() {
         List<User> users = userRepository.findByUrlNotNull();
         for (User user : users) {
