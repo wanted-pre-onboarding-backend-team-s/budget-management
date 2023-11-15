@@ -46,14 +46,14 @@ public class ExpenseConsultantService {
 
     private TodayExpenseRecMessage generateExpenseRecommendations() {
         List<Budget> budgets = budgetRepository.findByUserIdAndYearmonth(1L, YearMonth.now());
-        List<Expense> expenses = expenseRepository.findByUserIdAndDate(
+        List<Expense> expenses = expenseRepository.findByUserIdAndYearmonth(
                 1L,
                 LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")));
 
         int totalBudget = budgets.stream().mapToInt(Budget::getAmount).sum();
         int remainingBudget = totalBudget;
 
-        Map<Category, Integer> remainingCategoryBudgets
+        Map<Category, Integer> dailyRecommendedCategoryBudgets
                 = budgets.stream()
                          .collect(Collectors.groupingBy(
                                  Budget::getCategory,
@@ -63,15 +63,23 @@ public class ExpenseConsultantService {
             int amount = expense.getAmount();
             remainingBudget -= amount;
 
-            if (remainingCategoryBudgets.containsKey(expense.getCategory())) {
-                remainingCategoryBudgets.replace(
+            if (dailyRecommendedCategoryBudgets.containsKey(expense.getCategory())) {
+                dailyRecommendedCategoryBudgets.replace(
                         expense.getCategory(),
-                        remainingCategoryBudgets.get(expense.getCategory()) - amount
+                        dailyRecommendedCategoryBudgets.get(expense.getCategory()) - amount
                 );
             }
         }
 
-        return new TodayExpenseRecMessage(totalBudget, remainingBudget, remainingCategoryBudgets);
+        int daysRemainingInMonth = YearMonth.now().lengthOfMonth() - LocalDate.now().getDayOfMonth() + 1;
+
+        dailyRecommendedCategoryBudgets = dailyRecommendedCategoryBudgets.entrySet().stream()
+                                                           .collect(Collectors.toMap(
+                                                                   Map.Entry::getKey,
+                                                                   entry -> entry.getValue() / daysRemainingInMonth
+                                                           ));
+
+        return new TodayExpenseRecMessage(totalBudget, remainingBudget, dailyRecommendedCategoryBudgets);
     }
 
     @Scheduled(cron = "0 0 20 * * *")

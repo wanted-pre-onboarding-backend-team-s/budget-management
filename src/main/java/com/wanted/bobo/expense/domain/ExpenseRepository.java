@@ -11,5 +11,6 @@ public interface ExpenseRepository extends
     @Query(value =
             "SELECT * FROM expenses " +
             "WHERE user_id = :userId AND DATE_FORMAT(date, '%Y-%m') = :yearmonth", nativeQuery = true)
-    List<Expense> findByUserIdAndDate(Long userId, String yearmonth);
+    List<Expense> findByUserIdAndYearmonth(Long userId, String yearmonth);
+
 }

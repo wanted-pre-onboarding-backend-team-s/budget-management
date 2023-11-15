@@ -2,8 +2,7 @@ package com.wanted.bobo.expense.dto;
 
 import com.wanted.bobo.category.Category;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
+import java.time.YearMonth;
 import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,15 +13,15 @@ public class TodayExpenseRecMessage {
 
     int totalBudget;
     int remainingBudget;
-    Map<Category, Integer> remainingCategoryBudgets;
+    Map<Category, Integer> dailyRecommendedCategoryBudgets;
 
     public TodayExpenseRecMessage(
             int totalBudget,
             int remainingBudget,
-            Map<Category, Integer> remainingCategoryBudgets) {
+            Map<Category, Integer> dailyRecommendedCategoryBudgets) {
         this.totalBudget = totalBudget;
         this.remainingBudget = remainingBudget;
-        this.remainingCategoryBudgets = remainingCategoryBudgets;
+        this.dailyRecommendedCategoryBudgets = dailyRecommendedCategoryBudgets;
     }
 
     public Map<String, Object> toWebhookMessage() {
@@ -46,28 +45,25 @@ public class TodayExpenseRecMessage {
         String startComment = "오늘도 예산 내에서 효율적으로 소비해보세요!ㅤ\n\n";
         description.append(startComment);
 
-        boolean budgetAlert = false; // 예산을 초과하거나 모두 사용한 카테고리 여부를 확인하기 위한 변수
+        boolean budgetAlert = false;
 
-        int dailyBudget = remainingBudget / daysRemainingInMonth();
+        int daysRemainingInMonth = YearMonth.now().lengthOfMonth() - LocalDate.now().getDayOfMonth() + 1;
+        int dailyBudget = remainingBudget / daysRemainingInMonth;
 
         description.append("오늘 사용 가능한 총 금액은 ")
                    .append(floorTo100(dailyBudget))
                    .append("원 입니다.\n\n");
 
         description.append("오늘 카테고리 별 사용 가능한 금액은 아래와 같습니다.\n");
-        for (Map.Entry<Category, Integer> entry : remainingCategoryBudgets.entrySet()) {
+        for (Map.Entry<Category, Integer> entry : dailyRecommendedCategoryBudgets.entrySet()) {
             Category category = entry.getKey();
             int remainingBudget = entry.getValue();
-
             int minimumBudget = 100000;
 
-
             if (remainingBudget > 0) {
-                int dailyCategoryBudget = remainingBudget / daysRemainingInMonth();
-
                 description.append(category.getName())
                            .append("ㅤ")
-                           .append(floorTo100(dailyCategoryBudget))
+                           .append(floorTo100(remainingBudget))
                            .append("원ㅤ");
             } else {
                 description.append(category.getName())
@@ -86,13 +82,6 @@ public class TodayExpenseRecMessage {
         }
 
         return description.toString();
-    }
-
-    private int daysRemainingInMonth() {
-        LocalDate today = LocalDate.now();
-        LocalDate endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
-
-        return (int) ChronoUnit.DAYS.between(today, endOfMonth) + 1;
     }
 
     private static int floorTo100(double amount) {
