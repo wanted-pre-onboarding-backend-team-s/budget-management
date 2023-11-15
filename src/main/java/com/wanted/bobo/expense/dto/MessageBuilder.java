@@ -7,9 +7,11 @@ import java.util.Map;
 public class MessageBuilder {
 
     private String title;
+    private String description;
 
-    public MessageBuilder(String title) {
+    public MessageBuilder(String title, String description) {
         this.title = title;
+        this.description = description;
     }
 
     public Map<String, Object> build() {
@@ -21,8 +23,8 @@ public class MessageBuilder {
     private Map<String, Object> createEmbed() {
         Map<String, Object> embed = new HashMap<>();
         embed.put("title", title);
-        embed.put("description", " ");
-        embed.put("color", 0x808080);
+        embed.put("description", description);
+        embed.put("color", 0x87CEEB);
         return embed;
     }
 

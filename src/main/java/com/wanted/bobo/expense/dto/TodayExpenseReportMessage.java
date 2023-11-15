@@ -11,7 +11,7 @@ public class TodayExpenseReportMessage {
     private String content;
 
     public Map<String, Object> toWebhookMessage() {
-        MessageBuilder messageBuilder = new MessageBuilder("오늘의 지출 안내");
+        MessageBuilder messageBuilder = new MessageBuilder("오늘의 지출 안내", "");
         return messageBuilder.build();
     }
 }
