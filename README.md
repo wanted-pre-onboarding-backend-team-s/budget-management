@@ -114,8 +114,8 @@ saving
   - 팀 프로젝트를 진행할 때 처럼 JIRA를 이용하여 프로젝트를 관리하였습니다.
   - 인텔리제이와 연동하여 해당 티켓당 브랜치를 생성하여 PR 하는방식으로 진행하였습니다.
 <p style="display: flex; justify-content: center" >
-  <img src="https://github.com/newnyee/saving/assets/121937711/5ec57a59-4fe9-4513-af3a-3f9778b9ea2c" width="500"/>
-  <img src="https://github.com/newnyee/saving/assets/121937711/2faa77a0-2750-42ac-8023-116b14e73c61" width="500"/>
+  <img src="https://github.com/newnyee/saving/assets/121937711/5ec57a59-4fe9-4513-af3a-3f9778b9ea2c" width="400"/>
+  <img src="https://github.com/newnyee/saving/assets/121937711/2faa77a0-2750-42ac-8023-116b14e73c61" width="400"/>
 </p>
 <br>
 
