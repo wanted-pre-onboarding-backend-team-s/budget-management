@@ -4,6 +4,7 @@ import com.saving.category.budget.exception.BudgetForCategoryAlreadyExistExcepti
 import com.saving.category.budget.exception.BudgetNotFoundException;
 import com.saving.category.exception.CategoryNotFoundException;
 import com.saving.category.exception.MismatchedCategoryIdAndUserIdException;
+import com.saving.expense.exception.ExpenseAmountSearchException;
 import com.saving.expense.exception.ExpenseMethodNotFoundException;
 import com.saving.expense.exception.NotExistExpenseInCategoryException;
 import com.saving.user.exception.DuplicateUserNameException;
@@ -46,7 +47,10 @@ public enum ErrorType {
     EP001("EP001", "존재하지 않는 화폐유형입니다.",
             ExpenseMethodNotFoundException.class, HttpStatus.BAD_REQUEST),
     EP002("EP002", "존재하지 않는 지출 내역입니다.",
-            NotExistExpenseInCategoryException.class, HttpStatus.BAD_REQUEST);
+            NotExistExpenseInCategoryException.class, HttpStatus.BAD_REQUEST),
+    EP003("EP003", "금액 검색 조회시 최소, 최대값을 모두 입력해야합니다.",
+            ExpenseAmountSearchException.class, HttpStatus.BAD_REQUEST);
+
 
     private final String code;
     private final String message;

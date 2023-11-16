@@ -17,6 +17,7 @@ import com.saving.expense.dto.ResultExpenseRateComparedLastMonth;
 import com.saving.expense.dto.SimpleExpenseDto;
 import com.saving.expense.dto.TodayExpenseNoticeDto;
 import com.saving.expense.dto.TotalExpenseByCategory;
+import com.saving.expense.exception.ExpenseAmountSearchException;
 import com.saving.expense.exception.NotExistExpenseInCategoryException;
 import com.saving.expense.vo.CalcTodayCategoryExpenseVo;
 import com.saving.user.domain.entity.User;
@@ -99,19 +100,28 @@ public class ExpenseService {
     @Transactional(readOnly = true)
     public ExpenseListResponseDto expenseList(
             Long userId, String startDate, String endDate,
-            Long categoryId, Boolean minAmount, Boolean maxAmount) {
+            Long categoryId, Integer minAmount, Integer maxAmount) {
 
-        List<SimpleExpenseDto> simpleExpenseList = expenseRepository.listOfTimeBasedExpense(userId,
-                startDate, endDate,
+        if (categoryId != null) {
+            existUserAndCategory(categoryId, userId);
+        }
+
+        if ((minAmount != null && maxAmount == null) || (minAmount == null && maxAmount != null)) {
+            throw new ExpenseAmountSearchException();
+        }
+
+        List<SimpleExpenseDto> simpleExpenseList = expenseRepository.listOfTimeBasedExpense(
+                userId, startDate, endDate,
                 categoryId, minAmount, maxAmount);
 
-        Long totalExpense = expenseRepository.totalExpense(userId, startDate, endDate, categoryId,
-                minAmount,
-                maxAmount);
+        Long totalExpense = expenseRepository.totalExpense(
+                userId, startDate, endDate,
+                categoryId, minAmount, maxAmount).orElse(0L);
 
-        List<TotalExpenseByCategory> totalExpenseByCategoryList = expenseRepository.listOfCategoryBasedExpense(
-                userId, startDate, endDate, categoryId,
-                minAmount, maxAmount);
+        List<TotalExpenseByCategory> totalExpenseByCategoryList =
+                expenseRepository.listOfCategoryBasedExpense(
+                        userId, startDate, endDate,
+                        categoryId, minAmount, maxAmount);
 
         return ExpenseListResponseDto.builder()
                 .expenseList(simpleExpenseList)

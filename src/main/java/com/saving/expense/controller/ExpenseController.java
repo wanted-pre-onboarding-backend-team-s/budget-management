@@ -83,11 +83,11 @@ public class ExpenseController {
             @Schema(description = "카테고리 아이디")
             @RequestParam(name = "category-id", required = false) Long categoryId,
 
-            @Schema(description = "최소 금액으로 조회")
-            @RequestParam(name = "min-amount", required = false) Boolean minAmount,
+            @Schema(description = "최소 지출액")
+            @RequestParam(name = "min-amount", required = false) Integer minAmount,
 
-            @Schema(description = "최대 금액으로 조회")
-            @RequestParam(name = "max-amount", required = false) Boolean maxAmount) {
+            @Schema(description = "최대 지출액")
+            @RequestParam(name = "max-amount", required = false) Integer maxAmount) {
 
         return ApiResponse.ok(
                 expenseService.expenseList(userId, startDate, endDate,

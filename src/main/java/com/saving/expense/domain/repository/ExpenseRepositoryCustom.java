@@ -10,13 +10,13 @@ public interface ExpenseRepositoryCustom {
 
     List<SimpleExpenseDto> listOfTimeBasedExpense(
             Long userId, String startDate, String endDate,
-            Long categoryId, Boolean minAmount, Boolean maxAmount);
+            Long categoryId, Integer minAmount, Integer maxAmount);
 
-    Long totalExpense(Long userId, String startDate, String endDate,
-            Long categoryId, Boolean minAmount, Boolean maxAmount);
+    Optional<Long> totalExpense(Long userId, String startDate, String endDate,
+            Long categoryId, Integer minAmount, Integer maxAmount);
 
     List<TotalExpenseByCategory> listOfCategoryBasedExpense(Long userId, String startDate,
-            String endDate, Long categoryId, Boolean minAmount, Boolean maxAmount);
+            String endDate, Long categoryId, Integer minAmount, Integer maxAmount);
 
     Optional<ExpenseResponseDto> findByIdAndUserId(Long id, Long userId);
 

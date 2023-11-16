@@ -4,6 +4,7 @@ import static com.saving.category.domain.entity.QCategory.category;
 import static com.saving.expense.domain.entity.QExpense.expense;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.saving.expense.dto.ExpenseResponseDto;
 import com.saving.expense.dto.SimpleExpenseDto;
@@ -19,7 +20,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom{
 
     @Override
     public List<SimpleExpenseDto> listOfTimeBasedExpense(Long userId, String startDate,
-            String endDate, Long categoryId, Boolean minAmount, Boolean maxAmount) {
+            String endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
 
         return jpaQueryFactory
                 .select(Projections.constructor(
@@ -29,33 +30,38 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom{
                         expense.amount,
                         expense.expenseAt))
                 .from(expense)
-                .leftJoin(category)
+                .join(category)
                 .on(expense.categoryId.eq(category.id))
                 .where(category.userId.eq(userId)
-                        .and(expense.expenseAt.between(startDate, endDate)
-                        .and(expense.isTotalExpenseApply.eq(1))))
+                        .and(expense.expenseAt.between(startDate, endDate))
+                        .and(expense.isTotalExpenseApply.eq(1))
+                        .and(categoryIdEq(categoryId))
+                        .and(amountRangeEq(minAmount, maxAmount)))
                 .orderBy(expense.expenseAt.desc())
                 .fetch();
     }
 
     @Override
-    public Long totalExpense(Long userId, String startDate,
-            String endDate, Long categoryId, Boolean minAmount, Boolean maxAmount) {
+    public Optional<Long> totalExpense(Long userId, String startDate,
+            String endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
 
-        return jpaQueryFactory
+        return Optional.of(
+                jpaQueryFactory
                 .select(expense.amount.sum().coalesce(0))
                 .from(expense)
-                .leftJoin(category)
+                .join(category)
                 .on(expense.categoryId.eq(category.id))
                 .where(category.userId.eq(userId)
-                        .and(expense.expenseAt.between(startDate, endDate)
-                                .and(expense.isTotalExpenseApply.eq(1))))
-                .fetchOne().longValue();
+                        .and(expense.expenseAt.between(startDate, endDate))
+                        .and(expense.isTotalExpenseApply.eq(1))
+                        .and(categoryIdEq(categoryId))
+                        .and(amountRangeEq(minAmount, maxAmount)))
+                .fetchOne().longValue());
     }
 
     @Override
     public List<TotalExpenseByCategory> listOfCategoryBasedExpense(Long userId, String startDate,
-            String endDate, Long categoryId, Boolean minAmount, Boolean maxAmount) {
+            String endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
 
         return jpaQueryFactory
                 .select(Projections.constructor(
@@ -64,14 +70,24 @@ public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom{
                         category.categoryName,
                         expense.amount.sum().as("categoryTotalExpense")))
                 .from(expense)
-                .leftJoin(category)
+                .join(category)
                 .on(expense.categoryId.eq(category.id))
                 .where(category.userId.eq(userId)
-                        .and(expense.expenseAt.between(startDate, endDate)
-                        .and(expense.isTotalExpenseApply.eq(1))))
+                        .and(expense.expenseAt.between(startDate, endDate))
+                        .and(expense.isTotalExpenseApply.eq(1))
+                        .and(categoryIdEq(categoryId))
+                        .and(amountRangeEq(minAmount, maxAmount)))
                 .groupBy(expense.categoryId)
                 .orderBy(expense.amount.sum().desc())
                 .fetch();
+    }
+
+    private BooleanExpression categoryIdEq(Long categoryId) {
+        return categoryId != null ? expense.categoryId.eq(categoryId) : null;
+    }
+
+    private BooleanExpression amountRangeEq(Integer minAmount, Integer maxAmount) {
+        return minAmount != null ? expense.amount.between(minAmount, maxAmount) : null;
     }
 
     @Override
