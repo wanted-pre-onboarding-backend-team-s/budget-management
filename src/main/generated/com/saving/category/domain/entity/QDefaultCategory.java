@@ -19,6 +19,8 @@ public class QDefaultCategory extends EntityPathBase<DefaultCategory> {
 
     public static final QDefaultCategory defaultCategory = new QDefaultCategory("defaultCategory");
 
+    public final NumberPath<Double> defaultBudget = createNumber("defaultBudget", Double.class);
+
     public final StringPath defaultCategoryName = createString("defaultCategoryName");
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);

@@ -18,10 +18,12 @@ public class DefaultCategory {
     @GeneratedValue
     private Integer id;
     private String defaultCategoryName;
+    private double defaultBudget;
 
     @Builder
-    public DefaultCategory(int id, String defaultCategoryName) {
+    public DefaultCategory(int id, String defaultCategoryName, double defaultBudget) {
         this.id = id;
         this.defaultCategoryName = defaultCategoryName;
+        this.defaultBudget = defaultBudget;
     }
 }
