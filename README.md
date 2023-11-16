@@ -140,6 +140,7 @@ saving
 
 ### 📌예산
 - 예산의 기준이 카테고리가 되므로 `예산(budget)` 패키지를 `카테고리(category)` 패키지 하위로 구성하였습니다.
+- 예산 설정이 어려운 사용자를 위한 [예산 설정 추천 기능](https://github.com/newnyee/saving/commit/8ee469444c4b5930cbddb5c2f6ab349d3744e0d6)을 구현하였습니다.
 
 <br>
 
