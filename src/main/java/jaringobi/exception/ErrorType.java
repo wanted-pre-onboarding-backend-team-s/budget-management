@@ -3,6 +3,8 @@ package jaringobi.exception;
 
 import jaringobi.exception.budget.InvalidBudgetException;
 import jaringobi.exception.budget.LowBudgetException;
+import jaringobi.exception.expense.ExpenseNullArgumentException;
+import jaringobi.exception.expense.ExpenseNullUserException;
 import jaringobi.exception.user.NotFoundUserException;
 import jaringobi.exception.user.PasswordNotMatchedException;
 import jaringobi.exception.user.UsernameDuplicatedException;
@@ -21,7 +23,10 @@ public enum ErrorType {
     U003("U003", "비밀번호가 일치하지 않습니다.", PasswordNotMatchedException.class, HttpStatus.BAD_REQUEST),
 
     B001("B001", "올바르지 않은 예산 정보입니다.", InvalidBudgetException.class, HttpStatus.BAD_REQUEST),
-    B002("B002", "지정 예산은 0원을 넘을 수 없습니다.", LowBudgetException.class, HttpStatus.BAD_REQUEST);
+    B002("B002", "지정 예산은 0원을 넘을 수 없습니다.", LowBudgetException.class, HttpStatus.BAD_REQUEST),
+
+    E001("E001", "필수 지출 정보를 입력바랍니다. 정보 생성 시 (지출 금액, 지출 일, 지출 카테고리)", ExpenseNullArgumentException.class, HttpStatus.BAD_REQUEST),
+    E002("E002", "지출 추가 시 유저 정보는 필수입니다.", ExpenseNullUserException.class, HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
