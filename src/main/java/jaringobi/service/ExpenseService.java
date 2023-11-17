@@ -1,6 +1,7 @@
 package jaringobi.service;
 
 import jaringobi.controller.request.AddExpenseRequest;
+import jaringobi.controller.response.AddExpenseNoResponse;
 import jaringobi.domain.budget.Money;
 import jaringobi.domain.category.Category;
 import jaringobi.domain.category.CategoryRepository;
@@ -25,11 +26,12 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public void addExpense(AddExpenseRequest addExpenseRequest,final AppUser appUser) {
+    public AddExpenseNoResponse addExpense(AddExpenseRequest addExpenseRequest,final AppUser appUser) {
         final User user = findUser(appUser);
         final Category category = findCategory(addExpenseRequest.getCategoryId());
         Expense expense = convertToExpense(addExpenseRequest, user, category);
-        expenseRepository.save(expense);
+        Expense savedExpense = expenseRepository.save(expense);
+        return AddExpenseNoResponse.of(savedExpense);
     }
 
     private Expense convertToExpense(AddExpenseRequest addExpenseRequest, User user, Category category) {

@@ -27,17 +27,17 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "EXPENSE")
+@Table(name = "expense")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Expense extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Lob
-    @Column(name = "MEMO", columnDefinition = "MEDIUMTEXT")
+    @Column(name = "memo", columnDefinition = "MEDIUMTEXT")
     private String memo;
 
     @Embedded
@@ -45,20 +45,20 @@ public class Expense extends BaseTimeEntity {
     private Money money;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false,
+    @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_expense_user_id"))
     private User owner;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", nullable = false,
+    @JoinColumn(name = "category_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_expense_category_id"))
     private Category category;
 
     @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "EXPENSE_AT", nullable = false)
+    @Column(name = "expense_at", nullable = false)
     private LocalDateTime expenseAt;
 
-    @Column(name = "IS_EXCLUDE_IN_TOTAL", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "is_exclude_in_total", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean isExcludeInTotal = false;
 
     @Builder
@@ -72,7 +72,6 @@ public class Expense extends BaseTimeEntity {
         this.money = money;
         this.category = category;
         this.expenseAt = expenseAt;
-
         if (Objects.nonNull(exclude)) {
             setExclude(exclude);
         }
@@ -94,4 +93,7 @@ public class Expense extends BaseTimeEntity {
         }
     }
 
+    public Long getId() {
+        return id;
+    }
 }

@@ -1,7 +1,7 @@
 package jaringobi.controller.request;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import jaringobi.domain.budget.Money;
 import jaringobi.domain.expense.Expense;
 import java.time.LocalDateTime;
@@ -13,17 +13,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddExpenseRequest {
 
-    private String memo;
+    @NotNull(message = "지출 금액은 필수입니다.")
+    @Positive(message = "지출 금액은 최소 0원 보다 커야합니다.")
+    private Integer expenseMount;
 
-    @PositiveOrZero
-    private int expenseMount;
-
-    @NotNull
+    @NotNull(message = "지출일은 필수입니다.")
     private LocalDateTime expenseDateTime;
-    private Boolean excludeTotalExpense;
 
-    @PositiveOrZero
-    private int categoryId;
+    @NotNull(message = "카테고리는 필수입니다.")
+    @Positive(message = "잘못된 카테고리 번호입니다.")
+    private Long categoryId;
+
+    private String memo;
+    private Boolean excludeTotalExpense;
 
     public Expense toExpense() {
         return Expense.builder()
@@ -35,7 +37,7 @@ public class AddExpenseRequest {
 
     @Builder
     public AddExpenseRequest(String memo, int expenseMount, LocalDateTime expenseDateTime, Boolean excludeTotalExpense,
-            int categoryId) {
+            Long categoryId) {
         this.memo = memo;
         this.expenseMount = expenseMount;
         this.expenseDateTime = expenseDateTime;
