@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AuthenticationErrorType {
 
+    FORBIDDEN("AUTH_00", "인증이 필요한 접근입니다.", AuthenticationException.class),
     EXPIRED_AT("AUTH_01", "엑세스 토큰이 만료되었습니다.", AccessTokenExpiredException.class),
     INVALID_TOKEN("AUTH_02", "유효하지 않은 토큰입니다.", InvalidTokenException.class);
 
