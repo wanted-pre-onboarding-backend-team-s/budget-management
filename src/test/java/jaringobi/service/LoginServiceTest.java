@@ -10,7 +10,7 @@ import jaringobi.controller.request.LoginRequest;
 import jaringobi.controller.response.LoginResponse;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
-import jaringobi.exception.user.NotFoundUserException;
+import jaringobi.exception.user.UserNotFoundException;
 import jaringobi.exception.user.PasswordNotMatchedException;
 import jaringobi.jwt.TokenProvider;
 import java.lang.reflect.Field;
@@ -85,7 +85,7 @@ class LoginServiceTest {
 
         // Then
         assertThatThrownBy(() -> loginService.login(loginRequest))
-                .isInstanceOf(NotFoundUserException.class);
+                .isInstanceOf(UserNotFoundException.class);
 
         // Verify
         verify(tokenProvider, times(0)).issueAccessToken(1L);

@@ -16,7 +16,7 @@ import jaringobi.domain.budget.BudgetYearMonth;
 import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
-import jaringobi.exception.user.NotFoundUserException;
+import jaringobi.exception.user.UserNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -93,7 +93,7 @@ public class BudgetServiceTest {
 
         // When
         assertThatThrownBy(() -> budgetService.addBudget(appUser, addBudgetRequest))
-                .isInstanceOf(NotFoundUserException.class);
+                .isInstanceOf(UserNotFoundException.class);
 
         // Verify
         verify(budgetRepository, times(0)).save(any());
