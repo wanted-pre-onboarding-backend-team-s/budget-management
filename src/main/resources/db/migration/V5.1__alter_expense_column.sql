@@ -1,0 +1,1 @@
+alter table EXPENSE add column IS_EXCLUDE_IN_TOTAL tinyint(1) not null default false;
