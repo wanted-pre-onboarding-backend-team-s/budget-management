@@ -4,7 +4,7 @@ import jaringobi.controller.request.LoginRequest;
 import jaringobi.controller.response.LoginResponse;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
-import jaringobi.exception.user.NotFoundUserException;
+import jaringobi.exception.user.UserNotFoundException;
 import jaringobi.exception.user.PasswordNotMatchedException;
 import jaringobi.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,6 @@ public class LoginService {
 
     private User findUser(LoginRequest loginRequest) {
         return userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(UserNotFoundException::new);
     }
 }

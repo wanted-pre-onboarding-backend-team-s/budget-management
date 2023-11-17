@@ -8,7 +8,7 @@ import jaringobi.domain.budget.CategoryBudget;
 import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
-import jaringobi.exception.user.NotFoundUserException;
+import jaringobi.exception.user.UserNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,6 @@ public class BudgetService {
 
     private User findUser(AppUser appUser) {
         return userRepository.findById(appUser.userId())
-                .orElseThrow(NotFoundUserException::new);
+                .orElseThrow(UserNotFoundException::new);
     }
 }
