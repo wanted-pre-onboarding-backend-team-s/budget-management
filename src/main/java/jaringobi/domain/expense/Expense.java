@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -35,11 +36,12 @@ public class Expense extends BaseTimeEntity {
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "MEMO")
+    @Lob
+    @Column(name = "MEMO", columnDefinition = "MEDIUMTEXT")
     private String memo;
 
     @Embedded
-    @AttributeOverride(name = "amount", column = @Column(name = "AMOUNT"))
+    @AttributeOverride(name = "amount", column = @Column(name = "AMOUNT", nullable = false))
     private Money money;
 
     @ManyToOne
@@ -52,12 +54,16 @@ public class Expense extends BaseTimeEntity {
             foreignKey = @ForeignKey(name = "FK_expense_category_id"))
     private Category category;
 
-    @Temporal(value = TemporalType.DATE)
+    @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "EXPENSE_AT", nullable = false)
     private LocalDateTime expenseAt;
 
+    @Column(name = "IS_EXCLUDE_IN_TOTAL", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isExcludeInTotal = false;
+
     @Builder
-    public Expense(final Long id, final String memo, final Money money, final User user, final Category category, final LocalDateTime expenseAt) {
+    public Expense(final Long id, final String memo, final Money money, final User user, final Category category,
+            final LocalDateTime expenseAt, final Boolean exclude) {
         verifyNonNullArgument(money, category, expenseAt);
         verifyNonNullUser(user);
         this.id = id;
@@ -66,6 +72,14 @@ public class Expense extends BaseTimeEntity {
         this.money = money;
         this.category = category;
         this.expenseAt = expenseAt;
+
+        if (Objects.nonNull(exclude)) {
+            setExclude(exclude);
+        }
+    }
+
+    private void setExclude(Boolean exclude) {
+        this.isExcludeInTotal = exclude;
     }
 
     private void verifyNonNullUser(User user) {
