@@ -1,0 +1,9 @@
+alter table expense rename column ID to id;
+alter table expense rename column MEMO to memo;
+alter table expense rename column AMOUNT to amount;
+alter table expense rename column USER_ID to user_id;
+alter table expense rename column CATEGORY_ID to category_id;
+alter table expense rename column EXPENSE_AT to expense_at;
+alter table expense rename column CREATED_AT to created_at;
+alter table expense rename column UPDATED_AT to updated_at;
+alter table expense rename column IS_EXCLUDE_IN_TOTAL to is_exclude_in_total;
