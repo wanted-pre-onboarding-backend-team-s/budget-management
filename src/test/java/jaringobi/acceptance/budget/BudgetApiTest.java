@@ -5,22 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.path.json.JsonPath;
 import jaringobi.acceptance.ApiTest;
-import jaringobi.domain.user.User;
-import jaringobi.domain.user.UserRepository;
-import jaringobi.jwt.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @DisplayName("예산 API 테스트")
 public class BudgetApiTest extends ApiTest {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @Nested
     @DisplayName("[예산 설정] /api/v1/budget ")
@@ -30,9 +20,6 @@ public class BudgetApiTest extends ApiTest {
         @DisplayName("성공 200")
         void successCreateBudget() {
             // Given
-            saveUser();
-            String accessToken = tokenProvider.issueAccessToken(1L);
-
             String body = """
                     {
                         "budgetByCategories" : [
@@ -59,10 +46,6 @@ public class BudgetApiTest extends ApiTest {
         @Test
         @DisplayName("실패 400 - 중복된 카테고리 값")
         void failDuplicatedCategory() {
-            // Given
-            saveUser();
-            String accessToken = tokenProvider.issueAccessToken(1L);
-
             String body = """
                     {
                         "budgetByCategories" : [
@@ -93,9 +76,6 @@ public class BudgetApiTest extends ApiTest {
         @DisplayName("실패 400 - 비어있는 카테고리 예산")
         void failCategoryIsNull() {
             // Given
-            saveUser();
-            String accessToken = tokenProvider.issueAccessToken(1L);
-
             String body = """
                     {
                         "month": "2023-10"
@@ -116,8 +96,6 @@ public class BudgetApiTest extends ApiTest {
         @DisplayName("실패 400 - 잘못된 날짜 포맷형식")
         void failInvalidDateFormat() {
             // Given
-            saveUser();
-            String accessToken = tokenProvider.issueAccessToken(1L);
             String body = """
                     {
                         "budgetByCategories" : [
@@ -145,12 +123,5 @@ public class BudgetApiTest extends ApiTest {
         }
 
 
-    }
-
-    private void saveUser() {
-        userRepository.save(User.builder()
-                .username("testuser123")
-                .password("testuser123!")
-                .build());
     }
 }

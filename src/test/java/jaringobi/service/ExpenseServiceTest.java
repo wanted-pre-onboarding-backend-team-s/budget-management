@@ -7,8 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jaringobi.controller.request.AddExpenseRequest;
+import jaringobi.domain.budget.Money;
 import jaringobi.domain.category.Category;
 import jaringobi.domain.category.CategoryRepository;
+import jaringobi.domain.expense.Expense;
 import jaringobi.domain.expense.ExpenseRepository;
 import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
@@ -51,18 +53,28 @@ public class ExpenseServiceTest {
             .build();
 
     private final AddExpenseRequest addExpenseRequest = AddExpenseRequest.builder()
-            .categoryId(1)
+            .categoryId(1L)
             .expenseMount(10000)
             .memo("memo")
             .expenseDateTime(LocalDateTime.now())
             .build();
 
+    private final Expense mockExpense = Expense.builder()
+            .expenseAt(addExpenseRequest.getExpenseDateTime())
+            .money(new Money(addExpenseRequest.getExpenseMount()))
+            .memo(addExpenseRequest.getMemo())
+            .user(user)
+            .category(category)
+            .id(1L)
+            .build();
+
     @Test
     @DisplayName("지출 추가하기 성공")
-    void addExpense() {
+    void addExpense() throws NoSuchFieldException, IllegalAccessException {
         // Given
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
+        when(expenseRepository.save(any())).thenReturn(mockExpense);
 
         // When
         expenseService.addExpense(addExpenseRequest, appUser);

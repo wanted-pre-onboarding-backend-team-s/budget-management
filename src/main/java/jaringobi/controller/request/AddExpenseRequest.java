@@ -2,8 +2,6 @@ package jaringobi.controller.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jaringobi.domain.budget.Money;
-import jaringobi.domain.expense.Expense;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,14 +24,6 @@ public class AddExpenseRequest {
 
     private String memo;
     private Boolean excludeTotalExpense;
-
-    public Expense toExpense() {
-        return Expense.builder()
-                .expenseAt(expenseDateTime)
-                .money(new Money(expenseMount))
-                .memo(memo)
-                .build();
-    }
 
     @Builder
     public AddExpenseRequest(String memo, int expenseMount, LocalDateTime expenseDateTime, Boolean excludeTotalExpense,
