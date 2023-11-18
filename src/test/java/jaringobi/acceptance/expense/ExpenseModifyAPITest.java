@@ -19,7 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DisplayName("[지출 수정] /api/v1/expenditures/{id}")
+@DisplayName("지출 수정 API 테스트 : /api/v1/expenditures/{id}")
 public class ExpenseModifyAPITest extends APITest {
 
     @Autowired

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@DisplayName("지출 삭제 API 테스트 : /api/v1/expenditures/{id}")
 public class ExpenseDeleteAPITest extends APITest {
 
     @Autowired

@@ -7,7 +7,7 @@ import jaringobi.acceptance.APITest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("[로그인] API 테스트 : /api/v1/login ")
+@DisplayName("로그인 API 테스트 : /api/v1/login ")
 public class UserLoginAPITest extends APITest {
 
     @Test
