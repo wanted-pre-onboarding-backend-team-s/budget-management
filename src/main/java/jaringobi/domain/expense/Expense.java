@@ -67,7 +67,6 @@ public class Expense extends BaseTimeEntity {
         verifyNonNullArgument(money, category, expenseAt);
         this.id = id;
         this.memo = memo;
-
         if (Objects.nonNull(money)) {
             setMoney(money);
         }
@@ -79,6 +78,10 @@ public class Expense extends BaseTimeEntity {
 
         if (Objects.nonNull(user)) {
             setUser(user);
+        }
+
+        if (Objects.nonNull(category)) {
+            setCategory(category);
         }
     }
 
@@ -115,11 +118,16 @@ public class Expense extends BaseTimeEntity {
         this.money = new Money(expense.money.getAmount());
         this.expenseAt = expense.expenseAt;
         if (Objects.nonNull(expense.getCategory())) {
-            setCategory(category);
+            setCategory(expense.getCategory());
         }
     }
 
     private void setCategory(Category category) {
+        if (Objects.isNull(this.category)) {
+            this.category = category;
+            return;
+        }
+
         if (!this.category.isSameAs(category)) {
             this.category = category;
         }
