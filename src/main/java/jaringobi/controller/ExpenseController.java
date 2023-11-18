@@ -9,6 +9,7 @@ import jaringobi.controller.response.AddExpenseNoResponse;
 import jaringobi.domain.user.AppUser;
 import jaringobi.service.ExpenseService;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,6 +44,15 @@ public class ExpenseController {
     ) {
 
         expenseService.modifyExpense(modifyExpenseRequest, id, appUser);
+        return ApiResponse.noContent();
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteExpense(
+            @PathVariable Long id,
+            @AuthenticationPrincipal AppUser appUser
+    ) {
+        expenseService.deleteExpense(id, appUser);
         return ApiResponse.noContent();
     }
 
