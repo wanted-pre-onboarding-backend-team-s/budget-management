@@ -3,6 +3,7 @@ package jaringobi.acceptance;
 import static java.util.Arrays.stream;
 
 import io.restassured.RestAssured;
+import jaringobi.domain.expense.ExpenseRepository;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
 import jaringobi.jwt.TokenProvider;
@@ -26,6 +27,9 @@ public class APITest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    protected ExpenseRepository expenseRepository;
 
     @Autowired
     private TokenProvider tokenProvider;

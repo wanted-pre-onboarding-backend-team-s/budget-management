@@ -33,4 +33,15 @@ public class ExpenseAPI {
                 .then()
                 .log().all().extract();
     }
+
+    public static ExtractableResponse<Response> 지출삭제요청(Long id, String token) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .header(AUTHORIZATION, BEARER + token)
+                .delete("/api/v1/expenditures/{id}", id)
+                .andReturn()
+                .then()
+                .log().all().extract();
+    }
 }
