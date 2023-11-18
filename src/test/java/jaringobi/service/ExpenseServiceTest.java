@@ -154,6 +154,7 @@ public class ExpenseServiceTest {
         assertThat(mockExpense.getCategory().getId()).isEqualTo(modifyExpenseRequest.getCategoryId());
         assertThat(mockExpense.getMoney().getAmount()).isEqualTo(modifyExpenseRequest.getExpenseMount());
         assertThat(mockExpense.getExpenseAt()).isEqualTo(modifyExpenseRequest.getExpenseDateTime());
+        assertThat(mockExpense.isExcludeInTotal()).isEqualTo(modifyExpenseRequest.getExcludeTotalExpense());
     }
 
     @Test

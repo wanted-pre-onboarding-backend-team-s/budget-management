@@ -157,6 +157,7 @@ class ExpenseTest {
                         .id(1L)
                         .name("간식")
                         .build())
+                .exclude(false)
                 .build();
 
         Expense modifyExpense = Expense.builder()
@@ -167,6 +168,7 @@ class ExpenseTest {
                         .id(100L)
                         .name("기타")
                         .build())
+                .exclude(true)
                 .build();
 
         // When
@@ -175,7 +177,8 @@ class ExpenseTest {
         // Then
         assertThat(expense.getExpenseAt()).isEqualTo(modifyExpense.getExpenseAt());
         assertThat(expense.getMoney().isSameAs(modifyExpense.getMoney())).isTrue();
-        assertThat(expense.getCategory().isSameAs(modifyExpense.getCategory())).isFalse();
+        assertThat(expense.getCategory().isSameAs(modifyExpense.getCategory())).isTrue();
         assertThat(expense.getMemo()).isEqualTo(modifyExpense.getMemo());
+        assertThat(expense.isExcludeInTotal()).isEqualTo(modifyExpense.isExcludeInTotal());
     }
 }
