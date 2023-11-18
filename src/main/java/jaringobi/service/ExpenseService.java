@@ -79,4 +79,10 @@ public class ExpenseService {
         return userRepository.findById(appUser.userId())
                 .orElseThrow(UserNotFoundException::new);
     }
+
+    @Transactional
+    public void deleteExpense(Long expenseId, AppUser appUser) {
+        Expense expense = findExpenseOwnerOf(appUser, expenseId);
+        expenseRepository.delete(expense);
+    }
 }
