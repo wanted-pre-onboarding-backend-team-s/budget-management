@@ -3,13 +3,12 @@ package jaringobi.acceptance.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.path.json.JsonPath;
-import jaringobi.acceptance.ApiTest;
+import jaringobi.acceptance.APITest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("[로그인] API 테스트 : /api/v1/login ")
-public class UserLoginApiTest extends ApiTest {
+public class UserLoginAPITest extends APITest {
 
     @Test
     @DisplayName("성공 200")
@@ -21,7 +20,7 @@ public class UserLoginApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        UserApi.회원가입요청(signUpbody);
+        UserAPI.회원가입요청(signUpbody);
 
         String loginBody = """
                 {
@@ -31,7 +30,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
         JsonPath jsonPath = response.jsonPath();
 
         // Then
@@ -53,7 +52,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
 
         // Then
         assertThat(response.response().statusCode()).isEqualTo(404);
@@ -70,7 +69,7 @@ public class UserLoginApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        UserApi.회원가입요청(signUpbody);
+        UserAPI.회원가입요청(signUpbody);
 
         String loginBody = """
                 {
@@ -80,7 +79,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
 
         // Then
         assertThat(response.response().statusCode()).isEqualTo(400);
@@ -97,7 +96,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
         JsonPath jsonPath = response.jsonPath();
 
         // Then
@@ -119,7 +118,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
         JsonPath jsonPath = response.jsonPath();
 
         // Then
@@ -142,7 +141,7 @@ public class UserLoginApiTest extends ApiTest {
                 """;
 
         // When
-        var response = UserApi.로그인요청(loginBody);
+        var response = UserAPI.로그인요청(loginBody);
         JsonPath jsonPath = response.jsonPath();
 
         // Then

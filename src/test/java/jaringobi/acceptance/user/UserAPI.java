@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
-public class UserApi {
+public class UserAPI {
 
     public static ExtractableResponse<Response> 회원가입요청(String body) {
         return RestAssured.given().log().all()

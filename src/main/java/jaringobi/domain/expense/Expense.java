@@ -66,12 +66,15 @@ public class Expense extends BaseTimeEntity {
             final LocalDateTime expenseAt, final Boolean exclude) {
         verifyNonNullArgument(money, category, expenseAt);
         this.id = id;
-        this.memo = memo;
+        this.expenseAt = expenseAt;
+        if (Objects.nonNull(memo)) {
+            setMemo(memo);
+        }
+
         if (Objects.nonNull(money)) {
             setMoney(money);
         }
 
-        this.expenseAt = expenseAt;
         if (Objects.nonNull(exclude)) {
             setExclude(exclude);
         }
@@ -82,6 +85,12 @@ public class Expense extends BaseTimeEntity {
 
         if (Objects.nonNull(category)) {
             setCategory(category);
+        }
+    }
+
+    private void setMemo(String memo) {
+        if (Objects.nonNull(memo)) {
+            this.memo = memo;
         }
     }
 
@@ -114,13 +123,13 @@ public class Expense extends BaseTimeEntity {
     }
 
     public void modify(Expense expense) {
-        this.memo = expense.memo;
+        if (Objects.nonNull(expense.memo)) {
+            this.memo = expense.memo;
+        }
         this.money = new Money(expense.money.getAmount());
         this.expenseAt = expense.expenseAt;
         this.isExcludeInTotal = expense.isExcludeInTotal;
-        if (Objects.nonNull(expense.getCategory())) {
-            setCategory(expense.getCategory());
-        }
+        this.category = expense.getCategory();
     }
 
     private void setCategory(Category category) {
