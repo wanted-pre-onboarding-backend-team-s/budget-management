@@ -17,9 +17,9 @@ import jakarta.persistence.TemporalType;
 import jaringobi.domain.BaseTimeEntity;
 import jaringobi.domain.budget.Money;
 import jaringobi.domain.category.Category;
+import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
 import jaringobi.exception.expense.ExpenseNullArgumentException;
-import jaringobi.exception.expense.ExpenseNullUserException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -65,26 +65,47 @@ public class Expense extends BaseTimeEntity {
     public Expense(final Long id, final String memo, final Money money, final User user, final Category category,
             final LocalDateTime expenseAt, final Boolean exclude) {
         verifyNonNullArgument(money, category, expenseAt);
-        verifyNonNullUser(user);
         this.id = id;
-        this.memo = memo;
-        this.owner = user;
-        this.money = money;
-        this.category = category;
         this.expenseAt = expenseAt;
+        if (Objects.nonNull(memo)) {
+            setMemo(memo);
+        }
+
+        if (Objects.nonNull(money)) {
+            setMoney(money);
+        }
+
         if (Objects.nonNull(exclude)) {
             setExclude(exclude);
         }
-    }
 
-    private void setExclude(Boolean exclude) {
-        this.isExcludeInTotal = exclude;
-    }
-
-    private void verifyNonNullUser(User user) {
-        if (Objects.isNull(user)) {
-            throw new ExpenseNullUserException();
+        if (Objects.nonNull(user)) {
+            setUser(user);
         }
+
+        if (Objects.nonNull(category)) {
+            setCategory(category);
+        }
+    }
+
+    private void setMemo(String memo) {
+        if (Objects.nonNull(memo)) {
+            this.memo = memo;
+        }
+    }
+
+    private void setMoney(Money money) {
+        this.money = new Money(money.getAmount());
+    }
+
+    private void setUser(User user) {
+        if (Objects.isNull(this.owner)) {
+            this.owner = user;
+        }
+    }
+
+    private void setExclude(boolean exclude) {
+        this.isExcludeInTotal = exclude;
     }
 
     private void verifyNonNullArgument(Money money, Category category, LocalDateTime expenseAt) {
@@ -95,5 +116,50 @@ public class Expense extends BaseTimeEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isOwnerOf(AppUser appUser) {
+        return owner.isSame(appUser);
+    }
+
+    public void modify(Expense expense) {
+        if (Objects.nonNull(expense.memo)) {
+            this.memo = expense.memo;
+        }
+        this.money = new Money(expense.money.getAmount());
+        this.expenseAt = expense.expenseAt;
+        this.isExcludeInTotal = expense.isExcludeInTotal;
+        this.category = expense.getCategory();
+    }
+
+    private void setCategory(Category category) {
+        if (Objects.isNull(this.category)) {
+            this.category = category;
+            return;
+        }
+
+        if (!this.category.isSameAs(category)) {
+            this.category = category;
+        }
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public Money getMoney() {
+        return money;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public LocalDateTime getExpenseAt() {
+        return expenseAt;
+    }
+
+    public boolean isExcludeInTotal() {
+        return isExcludeInTotal;
     }
 }

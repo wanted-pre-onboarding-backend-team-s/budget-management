@@ -4,13 +4,13 @@ package jaringobi.acceptance.budget;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.path.json.JsonPath;
-import jaringobi.acceptance.ApiTest;
+import jaringobi.acceptance.APITest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("예산 API 테스트")
-public class BudgetApiTest extends ApiTest {
+public class BudgetAPITest extends APITest {
 
     @Nested
     @DisplayName("[예산 설정] /api/v1/budget ")
@@ -36,7 +36,7 @@ public class BudgetApiTest extends ApiTest {
                     }
                     """;
             // When
-            var response = BudgetApi.예산설정(body, accessToken);
+            var response = BudgetAPI.예산설정(body, accessToken);
 
             // Then
             assertThat(response.response().statusCode()).isEqualTo(201);
@@ -62,7 +62,7 @@ public class BudgetApiTest extends ApiTest {
                     }
                     """;
             // When
-            var response = BudgetApi.예산설정(body, accessToken);
+            var response = BudgetAPI.예산설정(body, accessToken);
             JsonPath jsonPath = response.jsonPath();
 
             // Then
@@ -82,7 +82,7 @@ public class BudgetApiTest extends ApiTest {
                     }
                     """;
             // When
-            var response = BudgetApi.예산설정(body, accessToken);
+            var response = BudgetAPI.예산설정(body, accessToken);
             JsonPath jsonPath = response.jsonPath();
 
             // Then
@@ -112,7 +112,7 @@ public class BudgetApiTest extends ApiTest {
                     }
                     """;
             // When
-            var response = BudgetApi.예산설정(body, accessToken);
+            var response = BudgetAPI.예산설정(body, accessToken);
             JsonPath jsonPath = response.jsonPath();
 
             // Then

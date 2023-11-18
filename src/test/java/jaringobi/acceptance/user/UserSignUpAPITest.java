@@ -4,12 +4,12 @@ package jaringobi.acceptance.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.path.json.JsonPath;
-import jaringobi.acceptance.ApiTest;
+import jaringobi.acceptance.APITest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("[회원가입] API 테스트 : /api/v1/signup ")
-public class UserSignUpApiTest extends ApiTest {
+public class UserSignUpAPITest extends APITest {
 
 
     @Test
@@ -21,7 +21,7 @@ public class UserSignUpApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        var response = UserApi.회원가입요청(body);
+        var response = UserAPI.회원가입요청(body);
         assertThat(response.response().statusCode()).isEqualTo(204);
         assertThat(response.header("Content-Type")).isEqualTo("application/json");
     }
@@ -36,7 +36,7 @@ public class UserSignUpApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        UserApi.회원가입요청(body);
+        UserAPI.회원가입요청(body);
 
         // when
         String body2 = """
@@ -45,7 +45,7 @@ public class UserSignUpApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        var response = UserApi.회원가입요청(body2);
+        var response = UserAPI.회원가입요청(body2);
         JsonPath jsonPath = response.jsonPath();
 
         // then
@@ -64,7 +64,7 @@ public class UserSignUpApiTest extends ApiTest {
                         "password": "password123!"
                     }
                 """;
-        var response = UserApi.회원가입요청(body);
+        var response = UserAPI.회원가입요청(body);
         JsonPath jsonPath = response.jsonPath();
         assertThat(response.response().statusCode()).isEqualTo(400);
         assertThat(response.header("Content-Type")).isEqualTo("application/json");
@@ -81,7 +81,7 @@ public class UserSignUpApiTest extends ApiTest {
                         "password": "password123"
                     }
                 """;
-        var response = UserApi.회원가입요청(body);
+        var response = UserAPI.회원가입요청(body);
         JsonPath jsonPath = response.jsonPath();
 
         assertThat(response.response().statusCode()).isEqualTo(400);

@@ -35,9 +35,10 @@ public class User extends BaseTimeEntity {
     private boolean isDeleted = false;
 
     @Builder
-    public User(String username, String password) {
+    public User(Long id, String username, String password) {
         Assert.hasText(username, "username must not be empty");
         Assert.hasText(password, "password must not be empty");
+        this.id = id;
         this.username = username;
         this.password = password;
     }
@@ -54,5 +55,9 @@ public class User extends BaseTimeEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isSame(AppUser appUser) {
+        return id.equals(appUser.userId());
     }
 }

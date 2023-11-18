@@ -1,5 +1,6 @@
 package jaringobi.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -7,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jaringobi.controller.request.AddExpenseRequest;
+import jaringobi.controller.request.ModifyExpenseRequest;
+import jaringobi.controller.response.AddExpenseNoResponse;
 import jaringobi.domain.budget.Money;
 import jaringobi.domain.category.Category;
 import jaringobi.domain.category.CategoryRepository;
@@ -15,10 +18,13 @@ import jaringobi.domain.expense.ExpenseRepository;
 import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
 import jaringobi.domain.user.UserRepository;
+import jaringobi.exception.auth.NoPermissionException;
 import jaringobi.exception.category.CategoryNotFoundException;
+import jaringobi.exception.expense.ExpenseNotFoundException;
 import jaringobi.exception.user.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,9 +51,16 @@ public class ExpenseServiceTest {
             .name("식품")
             .build();
 
+    private final Category modifyCategory = Category.builder()
+            .id(100L)
+            .name("생필품")
+            .build();
+
     private final AppUser appUser = new AppUser(1L);
+    private final AppUser anotherUser = new AppUser(2L);
 
     private final User user = User.builder()
+            .id(1L)
             .username("username")
             .password("password")
             .build();
@@ -57,6 +70,7 @@ public class ExpenseServiceTest {
             .expenseMount(10000)
             .memo("memo")
             .expenseDateTime(LocalDateTime.now())
+            .excludeTotalExpense(false)
             .build();
 
     private final Expense mockExpense = Expense.builder()
@@ -68,6 +82,14 @@ public class ExpenseServiceTest {
             .id(1L)
             .build();
 
+    private final ModifyExpenseRequest modifyExpenseRequest = ModifyExpenseRequest.builder()
+            .excludeTotalExpense(true)
+            .expenseDateTime(LocalDateTime.of(2025, 12, 25, 0, 0))
+            .categoryId(100L)
+            .expenseMount(100_000)
+            .memo("memo2")
+            .build();
+
     @Test
     @DisplayName("지출 추가하기 성공")
     void addExpense() throws NoSuchFieldException, IllegalAccessException {
@@ -77,7 +99,10 @@ public class ExpenseServiceTest {
         when(expenseRepository.save(any())).thenReturn(mockExpense);
 
         // When
-        expenseService.addExpense(addExpenseRequest, appUser);
+        AddExpenseNoResponse addExpenseNoResponse = expenseService.addExpense(addExpenseRequest, appUser);
+
+        // Then
+        Assertions.assertThat(addExpenseNoResponse.expenseNo()).isEqualTo(1L);
 
         // Verity
         verify(expenseRepository, times(1)).save(any());
@@ -89,7 +114,7 @@ public class ExpenseServiceTest {
         // Given
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Then
+        // When, Then
         assertThatThrownBy(() -> expenseService.addExpense(addExpenseRequest, appUser))
                 .isInstanceOf(UserNotFoundException.class);
 
@@ -105,12 +130,76 @@ public class ExpenseServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Then
+        // When, Then
         assertThatThrownBy(() -> expenseService.addExpense(addExpenseRequest, appUser))
                 .isInstanceOf(CategoryNotFoundException.class);
 
         // Verify
         verify(userRepository, times(1)).findById(any());
         verify(expenseRepository, times(0)).save(any());
+    }
+
+    @Test
+    @DisplayName("지출 수정하기 성공")
+    void modifyExpense() {
+        // Given
+        when(expenseRepository.findById(1L)).thenReturn(Optional.of(mockExpense));
+        when(categoryRepository.findById(100L)).thenReturn(Optional.of(modifyCategory));
+
+        // When
+        expenseService.modifyExpense(modifyExpenseRequest, 1L, appUser);
+
+        // Then
+        assertThat(mockExpense.getMemo()).isEqualTo(modifyExpenseRequest.getMemo());
+        assertThat(mockExpense.getCategory().getId()).isEqualTo(modifyExpenseRequest.getCategoryId());
+        assertThat(mockExpense.getMoney().getAmount()).isEqualTo(modifyExpenseRequest.getExpenseMount());
+        assertThat(mockExpense.getExpenseAt()).isEqualTo(modifyExpenseRequest.getExpenseDateTime());
+        assertThat(mockExpense.isExcludeInTotal()).isEqualTo(modifyExpenseRequest.getExcludeTotalExpense());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 카테고리의 경우 지출 수정하기 실패")
+    void throwExceptionNullCategoryWhenModifyExpense() {
+        // Given
+        when(expenseRepository.findById(1L)).thenReturn(Optional.of(mockExpense));
+        when(categoryRepository.findById(100L)).thenReturn(Optional.empty());
+
+        // When, Then
+        assertThatThrownBy(() -> expenseService.modifyExpense(modifyExpenseRequest, 1L, appUser))
+                .isInstanceOf(CategoryNotFoundException.class);
+
+        // Verify
+        verify(expenseRepository, times(1)).findById(any());
+        verify(categoryRepository, times(1)).findById(any());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 지출의 경우 지출 수정하기 실패")
+    void throwExceptionNullExpenseWhenModifyExpense() {
+        // Given
+        when(expenseRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // When, Then
+        assertThatThrownBy(() -> expenseService.modifyExpense(modifyExpenseRequest, 1L, appUser))
+                .isInstanceOf(ExpenseNotFoundException.class);
+
+        // Verify
+        verify(expenseRepository, times(1)).findById(any());
+        verify(categoryRepository, times(0)).findById(any());
+    }
+
+    @Test
+    @DisplayName("다른 유저가 수정하는 경우 지출 수정하기 실패")
+    void throwExceptionNullPermissionWhenModifyExpense() {
+        // Given
+        when(expenseRepository.findById(1L)).thenReturn(Optional.of(mockExpense));
+
+        // When, Then
+        assertThatThrownBy(() -> expenseService.modifyExpense(modifyExpenseRequest, 1L, anotherUser))
+                .isInstanceOf(NoPermissionException.class);
+
+        // Verify
+        verify(expenseRepository, times(1)).findById(any());
+        verify(categoryRepository, times(0)).findById(any());
     }
 }
