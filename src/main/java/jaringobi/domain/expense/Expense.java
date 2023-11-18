@@ -117,6 +117,7 @@ public class Expense extends BaseTimeEntity {
         this.memo = expense.memo;
         this.money = new Money(expense.money.getAmount());
         this.expenseAt = expense.expenseAt;
+        this.isExcludeInTotal = expense.isExcludeInTotal;
         if (Objects.nonNull(expense.getCategory())) {
             setCategory(expense.getCategory());
         }
@@ -147,5 +148,9 @@ public class Expense extends BaseTimeEntity {
 
     public LocalDateTime getExpenseAt() {
         return expenseAt;
+    }
+
+    public boolean isExcludeInTotal() {
+        return isExcludeInTotal;
     }
 }
