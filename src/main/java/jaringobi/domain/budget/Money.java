@@ -23,4 +23,12 @@ public class Money {
             throw new LowBudgetException();
         }
     }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public boolean isSameAs(Money money) {
+        return amount == money.getAmount();
+    }
 }

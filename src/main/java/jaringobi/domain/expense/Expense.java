@@ -17,9 +17,9 @@ import jakarta.persistence.TemporalType;
 import jaringobi.domain.BaseTimeEntity;
 import jaringobi.domain.budget.Money;
 import jaringobi.domain.category.Category;
+import jaringobi.domain.user.AppUser;
 import jaringobi.domain.user.User;
 import jaringobi.exception.expense.ExpenseNullArgumentException;
-import jaringobi.exception.expense.ExpenseNullUserException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -65,26 +65,35 @@ public class Expense extends BaseTimeEntity {
     public Expense(final Long id, final String memo, final Money money, final User user, final Category category,
             final LocalDateTime expenseAt, final Boolean exclude) {
         verifyNonNullArgument(money, category, expenseAt);
-        verifyNonNullUser(user);
         this.id = id;
         this.memo = memo;
-        this.owner = user;
-        this.money = money;
-        this.category = category;
+
+        if (Objects.nonNull(money)) {
+            setMoney(money);
+        }
+
         this.expenseAt = expenseAt;
         if (Objects.nonNull(exclude)) {
             setExclude(exclude);
         }
-    }
 
-    private void setExclude(Boolean exclude) {
-        this.isExcludeInTotal = exclude;
-    }
-
-    private void verifyNonNullUser(User user) {
-        if (Objects.isNull(user)) {
-            throw new ExpenseNullUserException();
+        if (Objects.nonNull(user)) {
+            setUser(user);
         }
+    }
+
+    private void setMoney(Money money) {
+        this.money = new Money(money.getAmount());
+    }
+
+    private void setUser(User user) {
+        if (Objects.isNull(this.owner)) {
+            this.owner = user;
+        }
+    }
+
+    private void setExclude(boolean exclude) {
+        this.isExcludeInTotal = exclude;
     }
 
     private void verifyNonNullArgument(Money money, Category category, LocalDateTime expenseAt) {
@@ -95,5 +104,40 @@ public class Expense extends BaseTimeEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isOwnerOf(AppUser appUser) {
+        return owner.isSame(appUser);
+    }
+
+    public void modify(Expense expense) {
+        this.memo = expense.memo;
+        this.money = new Money(expense.money.getAmount());
+        this.expenseAt = expense.expenseAt;
+        if (Objects.nonNull(expense.getCategory())) {
+            setCategory(category);
+        }
+    }
+
+    private void setCategory(Category category) {
+        if (!this.category.isSameAs(category)) {
+            this.category = category;
+        }
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public Money getMoney() {
+        return money;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public LocalDateTime getExpenseAt() {
+        return expenseAt;
     }
 }
