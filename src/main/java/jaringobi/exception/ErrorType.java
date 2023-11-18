@@ -4,10 +4,11 @@ package jaringobi.exception;
 import jaringobi.exception.budget.InvalidBudgetException;
 import jaringobi.exception.budget.LowBudgetException;
 import jaringobi.exception.category.CategoryNotFoundException;
+import jaringobi.exception.expense.ExpenseNotFoundException;
 import jaringobi.exception.expense.ExpenseNullArgumentException;
 import jaringobi.exception.expense.ExpenseNullUserException;
-import jaringobi.exception.user.UserNotFoundException;
 import jaringobi.exception.user.PasswordNotMatchedException;
+import jaringobi.exception.user.UserNotFoundException;
 import jaringobi.exception.user.UsernameDuplicatedException;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ public enum ErrorType {
 
     E001("E001", "필수 지출 정보를 입력바랍니다. 정보 생성 시 (지출 금액, 지출 일, 지출 카테고리)", ExpenseNullArgumentException.class, HttpStatus.BAD_REQUEST),
     E002("E002", "지출 추가 시 유저 정보는 필수입니다.", ExpenseNullUserException.class, HttpStatus.BAD_REQUEST),
+    E003("E003", "존재하지 않는 지출 정보입니다.", ExpenseNotFoundException.class, HttpStatus.NOT_FOUND),
 
     C001("C001", "존재하지 않는 카테고리 입니다.", CategoryNotFoundException.class, HttpStatus.BAD_REQUEST);
 

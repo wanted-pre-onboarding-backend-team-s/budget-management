@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jaringobi.domain.BaseTimeEntity;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,5 +27,12 @@ public class Category extends BaseTimeEntity {
     public Category(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public boolean isSameAs(Category category) {
+        if (Objects.isNull(category)) {
+            return false;
+        }
+        return id.equals(category.id);
     }
 }
