@@ -1,0 +1,1 @@
+ALTER TABLE budget RENAME TO budget_by_category;
