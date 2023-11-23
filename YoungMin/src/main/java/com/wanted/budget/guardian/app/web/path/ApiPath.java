@@ -15,4 +15,15 @@ public class ApiPath {
     // 카테고리
     public static final String CATEGORY = "/api/v1/category";
 
+    // 예산
+    public static final String BUDGET = "/api/v1/budget";
+    public static final String BUDGET_RECOMMEND = "/api/v1/budget/recommend";
+
+    // 지출
+    public static final String EXPENDITURE = "/api/v1/expenditure";
+    public static final String EXPENDITURE_FIND = "/api/v1/expenditure/{expenditureId}";
+    public static final String EXPENDITURE_UPDATE = "/api/v1/expenditure/{expenditureId}";
+    public static final String EXPENDITURE_DELETE = "/api/v1/expenditure/{expenditureId}";
+    public static final String EXPENDITURE_ALLOWS_SUM_CALCULATION_TOGGLE = "/api/v1/expenditure/calculation/allows/{expenditureId}";
+
 }
